@@ -10,293 +10,123 @@
 
   <style>
     :root {
-      --bg: #f3f5fa;
-      --card: #ffffff;
-      --text: #172033;
-      --muted: #6b7280;
-      --primary: #5b5ce2;
-      --border: #e5e7eb;
-      --danger: #dc2626;
-      --success: #15803d;
+      --bg:#f3f5fa; --card:#fff; --text:#172033;
+      --muted:#6b7280; --primary:#5b5ce2;
+      --border:#e5e7eb; --danger:#dc2626; --success:#15803d;
     }
-
-    * { box-sizing: border-box; }
-
+    * { box-sizing:border-box; }
     body {
-      margin: 0;
-      font-family: Arial, "Noto Sans Bengali", sans-serif;
-      background: var(--bg);
-      color: var(--text);
+      margin:0; font-family:Arial,"Noto Sans Bengali",sans-serif;
+      background:var(--bg); color:var(--text);
+      visibility:hidden;
     }
-
-    button, input, textarea, select {
-      font: inherit;
-    }
-
-    button { cursor: pointer; }
-
+    /* সেশন যাচাই হওয়ার পরই পেজ দৃশ্যমান হবে */
+    body.authenticated { visibility:visible; }
+    button,input,textarea,select { font:inherit; }
+    button { cursor:pointer; }
     .topbar {
-      background: #111827;
-      color: white;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      flex-wrap: wrap;
+      background:#111827; color:white; padding:16px;
+      display:flex; justify-content:space-between;
+      align-items:center; gap:12px; flex-wrap:wrap;
     }
-
-    .brand {
-      font-size: 23px;
-      font-weight: 800;
-      letter-spacing: 1px;
-    }
-
-    .brand span { color: #a5b4fc; }
-
+    .brand { font-size:23px; font-weight:800; letter-spacing:1px; }
+    .brand span { color:#a5b4fc; }
     .topbar small {
-      display: block;
-      color: #cbd5e1;
-      margin-top: 5px;
-      overflow-wrap: anywhere;
+      display:block; color:#cbd5e1; margin-top:5px;
+      overflow-wrap:anywhere;
     }
-
-    .top-actions {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
+    .top-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .top-actions button {
+      border:1px solid #475569; background:#1f2937;
+      color:white; padding:9px 12px; border-radius:9px;
     }
-
-    .top-actions a, .top-actions button {
-      border: 1px solid #475569;
-      background: #1f2937;
-      color: white;
-      text-decoration: none;
-      padding: 9px 12px;
-      border-radius: 9px;
-    }
-
-    .container {
-      width: min(1150px, 100%);
-      margin: auto;
-      padding: 18px;
-    }
-
-    .welcome {
-      margin: 8px 0 20px;
-    }
-
-    .welcome h1 {
-      font-size: 25px;
-      margin: 0 0 8px;
-    }
-
-    .welcome p {
-      color: var(--muted);
-      margin: 0;
-      line-height: 1.6;
-    }
-
+    .container { width:min(1150px,100%); margin:auto; padding:18px; }
+    .welcome { margin:8px 0 20px; }
+    .welcome h1 { font-size:25px; margin:0 0 8px; }
+    .welcome p { color:var(--muted); margin:0; line-height:1.6; }
     .notice {
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      color: #9a3412;
-      border-radius: 12px;
-      padding: 14px;
-      margin: 14px 0;
-      overflow-wrap: anywhere;
+      background:#fff7ed; border:1px solid #fed7aa; color:#9a3412;
+      border-radius:12px; padding:14px; margin:14px 0;
+      overflow-wrap:anywhere;
     }
-
-    .notice.ok {
-      background: #f0fdf4;
-      border-color: #bbf7d0;
-      color: #166534;
-    }
-
-    .notice.error {
-      background: #fef2f2;
-      border-color: #fecaca;
-      color: #991b1b;
-    }
-
+    .notice.ok { background:#f0fdf4; border-color:#bbf7d0; color:#166534; }
+    .notice.error { background:#fef2f2; border-color:#fecaca; color:#991b1b; }
     .stats {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
+      display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:12px; margin-bottom:20px;
     }
-
-    .stat, .panel {
-      background: var(--card);
-      border: 1px solid var(--border);
-      border-radius: 15px;
-      padding: 17px;
-      box-shadow: 0 3px 12px rgba(15, 23, 42, 0.035);
-      min-width: 0;
+    .stat,.panel {
+      background:var(--card); border:1px solid var(--border);
+      border-radius:15px; padding:17px;
+      box-shadow:0 3px 12px rgba(15,23,42,.035); min-width:0;
     }
-
-    .stat .label {
-      font-size: 13px;
-      color: var(--muted);
-    }
-
+    .stat .label { font-size:13px; color:var(--muted); }
     .stat .number {
-      font-size: 25px;
-      font-weight: 800;
-      margin-top: 9px;
-      overflow-wrap: anywhere;
+      font-size:25px; font-weight:800; margin-top:9px;
+      overflow-wrap:anywhere;
     }
-
-    .section-title {
-      font-size: 19px;
-      margin: 0 0 14px;
-    }
-
+    .section-title { font-size:19px; margin:0 0 14px; }
     .tabs {
-      display: flex;
-      gap: 8px;
-      overflow-x: auto;
-      padding: 3px 0 13px;
-      margin-bottom: 4px;
+      display:flex; gap:8px; overflow-x:auto;
+      padding:3px 0 13px; margin-bottom:4px;
     }
-
     .tab {
-      flex-shrink: 0;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px 14px;
-      color: var(--text);
+      flex-shrink:0; background:white; border:1px solid var(--border);
+      border-radius:10px; padding:10px 14px; color:var(--text);
     }
-
-    .tab.active {
-      background: var(--primary);
-      color: white;
-      border-color: var(--primary);
-    }
-
-    .panel { margin-bottom: 18px; }
-
+    .tab.active { background:var(--primary); color:white; border-color:var(--primary); }
+    .panel { margin-bottom:18px; }
     .form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 13px;
+      display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px;
     }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 7px;
-      min-width: 0;
+    .field { display:flex; flex-direction:column; gap:7px; min-width:0; }
+    .field.full { grid-column:1/-1; }
+    label { font-size:14px; font-weight:700; }
+    input,textarea,select {
+      width:100%; padding:11px 12px; border:1px solid #d1d5db;
+      border-radius:9px; background:white; color:var(--text); min-width:0;
     }
-
-    .field.full { grid-column: 1 / -1; }
-
-    label {
-      font-size: 14px;
-      font-weight: 700;
+    textarea { min-height:85px; resize:vertical; }
+    input:focus,textarea:focus,select:focus {
+      outline:2px solid #c7d2fe; border-color:var(--primary);
     }
-
-    input, textarea, select {
-      width: 100%;
-      padding: 11px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 9px;
-      background: white;
-      color: var(--text);
-      min-width: 0;
-    }
-
-    textarea {
-      min-height: 85px;
-      resize: vertical;
-    }
-
-    input:focus, textarea:focus, select:focus {
-      outline: 2px solid #c7d2fe;
-      border-color: var(--primary);
-    }
-
     .primary-btn {
-      background: var(--primary);
-      color: white;
-      border: 0;
-      border-radius: 10px;
-      padding: 12px 17px;
-      font-weight: 700;
+      background:var(--primary); color:white; border:0;
+      border-radius:10px; padding:12px 17px; font-weight:700;
     }
-
     .secondary-btn {
-      background: white;
-      color: var(--text);
-      border: 1px solid var(--border);
-      border-radius: 9px;
-      padding: 9px 12px;
+      background:white; color:var(--text);
+      border:1px solid var(--border); border-radius:9px; padding:9px 12px;
     }
-
-    .form-actions {
-      margin-top: 15px;
-      display: flex;
-      gap: 9px;
-      flex-wrap: wrap;
-    }
-
-    .record-list {
-      display: grid;
-      gap: 10px;
-    }
-
+    button:disabled { opacity:.6; cursor:not-allowed; }
+    .form-actions { margin-top:15px; display:flex; gap:9px; flex-wrap:wrap; }
+    .record-list { display:grid; gap:10px; }
     .record {
-      padding: 13px;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      background: #fff;
-      overflow-wrap: anywhere;
+      padding:13px; border:1px solid var(--border);
+      border-radius:11px; background:#fff; overflow-wrap:anywhere;
     }
-
-    .record strong {
-      display: block;
-      margin-bottom: 5px;
-    }
-
+    .record strong { display:block; margin-bottom:5px; }
     .record p {
-      color: var(--muted);
-      font-size: 14px;
-      line-height: 1.55;
-      margin: 5px 0;
-      white-space: pre-wrap;
+      color:var(--muted); font-size:14px; line-height:1.55;
+      margin:5px 0; white-space:pre-wrap;
     }
-
-    .record small { color: var(--muted); }
-
+    .record small { color:var(--muted); }
     .empty {
-      padding: 20px;
-      text-align: center;
-      color: var(--muted);
-      border: 1px dashed #cbd5e1;
-      border-radius: 10px;
+      padding:20px; text-align:center; color:var(--muted);
+      border:1px dashed #cbd5e1; border-radius:10px;
     }
-
-    .hidden { display: none !important; }
-
-    .footer {
-      color: var(--muted);
-      text-align: center;
-      padding: 22px 10px 30px;
-      font-size: 13px;
+    .hidden { display:none !important; }
+    .footer { color:var(--muted); text-align:center; padding:22px 10px 30px; font-size:13px; }
+    @media(max-width:760px) {
+      .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .container { padding:13px; }
+      .stat,.panel { padding:14px; }
+      .welcome h1 { font-size:22px; }
     }
-
-    @media (max-width: 760px) {
-      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .container { padding: 13px; }
-      .stat, .panel { padding: 14px; }
-      .welcome h1 { font-size: 22px; }
-    }
-
-    @media (max-width: 420px) {
-      .form-grid { grid-template-columns: 1fr; }
-      .field.full { grid-column: auto; }
-      .stat .number { font-size: 21px; }
+    @media(max-width:420px) {
+      .form-grid { grid-template-columns:1fr; }
+      .field.full { grid-column:auto; }
+      .stat .number { font-size:21px; }
     }
   </style>
 </head>
@@ -307,9 +137,7 @@
       <div class="brand">LIFE<span>OS</span></div>
       <small>Personal Life Management System</small>
     </div>
-
     <div class="top-actions">
-
       <button id="logoutBtn" type="button">লগআউট</button>
     </div>
   </header>
@@ -320,7 +148,7 @@
       <p>জীবন, শেখা, আয়-ব্যয়, লক্ষ্য এবং দৈনন্দিন কাজ এক জায়গায় পরিচালনা করো।</p>
     </div>
 
-    <div id="status" class="notice">Supabase-এর সঙ্গে সংযোগ করা হচ্ছে...</div>
+    <div id="status" class="notice">লগইন যাচাই করা হচ্ছে...</div>
 
     <div id="app" class="hidden">
       <div class="panel">
@@ -359,7 +187,6 @@
         </div>
       </section>
 
-      <!-- DAILY JOURNAL -->
       <section class="page" id="page-daily">
         <div class="panel">
           <h2 class="section-title">আজকের জার্নাল</h2>
@@ -395,7 +222,6 @@
         </div>
       </section>
 
-      <!-- LEARNING -->
       <section class="page hidden" id="page-learning">
         <div class="panel">
           <h2 class="section-title">Learning Log</h2>
@@ -425,7 +251,6 @@
         </div>
       </section>
 
-      <!-- FINANCE -->
       <section class="page hidden" id="page-finance">
         <div class="panel">
           <h2 class="section-title">আয় ও ব্যয়ের হিসাব</h2>
@@ -462,7 +287,6 @@
         </div>
       </section>
 
-      <!-- GOALS -->
       <section class="page hidden" id="page-goals">
         <div class="panel">
           <h2 class="section-title">আমার লক্ষ্য</h2>
@@ -496,7 +320,6 @@
         </div>
       </section>
 
-      <!-- WATCH LOG -->
       <section class="page hidden" id="page-watch">
         <div class="panel">
           <h2 class="section-title">Movie / Series Log</h2>
@@ -537,7 +360,6 @@
         </div>
       </section>
 
-      <!-- RECORDS -->
       <section class="page hidden" id="page-records">
         <div class="panel">
           <h2 class="section-title">সাম্প্রতিক রেকর্ড</h2>
@@ -559,40 +381,30 @@
       </section>
     </div>
 
-    <div id="loginHelp" class="panel hidden">
-      <h2 class="section-title">ড্যাশবোর্ডে প্রবেশ করতে লগইন করো</h2>
-      <p>প্রথমে LIFEOS-এর লগইন পেজে গিয়ে তোমার অ্যাকাউন্টে লগইন করো। তারপর এই ড্যাশবোর্ড আবার খোলো।</p>
-      <a href="/" class="primary-btn" style="display:inline-block;text-decoration:none">LIFEOS লগইন পেজে যাও</a>
-    </div>
-
     <footer class="footer">LIFEOS • Your life, organized.</footer>
   </main>
 
   <script>
     "use strict";
 
-    // এই URL ও Publishable Key index.html-এর সেটআপের সঙ্গে মিলতে হবে।
     const SUPABASE_URL = "https://bskzevsuyzfuycgxnpwb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_jUL2Ls1DBRvuFiQ26wMXqQ_CmNsMlXm";
+    const LOGIN_URL = "/";
 
-    // Supabase-এর ডিফল্ট session storage key-এর সঙ্গে মিল রাখা হয়েছে।
-    const client = window.supabase.createClient(
-      SUPABASE_URL,
-      SUPABASE_KEY,
-      {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          storageKey: "sb-bskzevsuyzfuycgxnpwb-auth-token"
-        }
-      }
-    );
-
+    let client = null;
     let currentUser = null;
     let loading = false;
+    let redirecting = false;
 
     const $ = id => document.getElementById(id);
+
+    function goToLogin() {
+      if (redirecting) return;
+      redirecting = true;
+      currentUser = null;
+      // সেশন না থাকলে বা বাতিল হলে কোনো ড্যাশবোর্ড দেখানো হবে না।
+      window.location.replace(LOGIN_URL);
+    }
 
     function setStatus(message, type = "") {
       const box = $("status");
@@ -602,8 +414,7 @@
 
     function today() {
       const d = new Date();
-      const offset = d.getTimezoneOffset();
-      return new Date(d.getTime() - offset * 60000)
+      return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
         .toISOString().slice(0, 10);
     }
 
@@ -615,53 +426,44 @@
 
     function escapeHTML(value) {
       return String(value ?? "").replace(/[&<>"']/g, ch => ({
-        "&": "&amp;",
-        "<": "&lt;",
-        ">": "&gt;",
-        '"': "&quot;",
-        "'": "&#39;"
+        "&": "&amp;", "<": "&lt;", ">": "&gt;",
+        '"': "&quot;", "'": "&#39;"
       }[ch]));
     }
 
     function showLoggedIn(user) {
       currentUser = user;
       $("app").classList.remove("hidden");
-      $("loginHelp").classList.add("hidden");
       $("userEmail").textContent = user.email || "ইমেইল পাওয়া যায়নি";
       setStatus("সফলভাবে সংযুক্ত। তোমার LIFEOS ড্যাশবোর্ড প্রস্তুত।", "ok");
+      document.body.classList.add("authenticated");
     }
 
-    function showLoggedOut(message) {
-      currentUser = null;
-      $("app").classList.add("hidden");
-      $("loginHelp").classList.remove("hidden");
-      setStatus(message || "লগইন সেশন পাওয়া যায়নি।", "error");
-    }
-
+    // প্রতিটি সুরক্ষিত কাজের আগে সেশন যাচাই।
     async function requireUser() {
-      const { data, error } = await client.auth.getSession();
-
-      if (error) throw error;
-
-      if (!data.session || !data.session.user) {
-        showLoggedOut(
-          "সেশন পাওয়া যায়নি। একই Firefox ব্রাউজারে আগে লগইন করে আবার চেষ্টা করো।"
-        );
-        return false;
+      if (!client || redirecting) {
+        goToLogin();
+        return null;
       }
 
-      showLoggedIn(data.session.user);
-      return true;
+      const { data, error } = await client.auth.getSession();
+
+      if (error || !data?.session?.user) {
+        goToLogin();
+        return null;
+      }
+
+      currentUser = data.session.user;
+      return currentUser;
     }
 
     async function insertRecord(table, record) {
-      if (!currentUser) {
-        throw new Error("লগইন সেশন নেই। আবার লগইন করো।");
-      }
+      const user = await requireUser();
+      if (!user) return;
 
       const { error } = await client
         .from(table)
-        .insert({ ...record, user_id: currentUser.id });
+        .insert({ ...record, user_id: user.id });
 
       if (error) throw error;
 
@@ -671,6 +473,10 @@
 
     function formError(error) {
       console.error(error);
+      if (error?.name === "AuthSessionMissingError") {
+        goToLogin();
+        return;
+      }
       setStatus(
         "সেভ করা যায়নি: " + (error.message || "অজানা সমস্যা") +
         " — টেবিলের কলাম ও Supabase RLS নীতি পরীক্ষা করো।",
@@ -681,15 +487,15 @@
     async function handleForm(formId, handler) {
       $(formId).addEventListener("submit", async event => {
         event.preventDefault();
-        if (loading) return;
+        if (loading || redirecting) return;
 
         loading = true;
         const button = event.submitter;
         if (button) button.disabled = true;
 
         try {
-          const ok = await requireUser();
-          if (!ok) return;
+          const user = await requireUser();
+          if (!user) return;
 
           await handler();
           $(formId).reset();
@@ -723,7 +529,6 @@
       if (!Number.isFinite(minutes) || minutes < 0) {
         throw new Error("শেখার মিনিট শূন্য বা তার বেশি হতে হবে।");
       }
-
       await insertRecord("learning_logs", {
         learning_date: $("learningDate").value,
         subject: $("learningSubject").value.trim(),
@@ -737,7 +542,6 @@
       if (!Number.isFinite(amount) || amount <= 0) {
         throw new Error("টাকার পরিমাণ শূন্যের চেয়ে বেশি হতে হবে।");
       }
-
       await insertRecord("finance_logs", {
         entry_date: $("financeDate").value,
         entry_type: $("financeType").value,
@@ -757,10 +561,11 @@
     });
 
     handleForm("watchForm", async () => {
-      let rating = $("watchRating").value;
-      rating = rating === "" ? null : Number(rating);
+      const rawRating = $("watchRating").value;
+      const rating = rawRating === "" ? null : Number(rawRating);
 
-      if (rating !== null && (rating < 0 || rating > 10)) {
+      if (rating !== null &&
+          (!Number.isFinite(rating) || rating < 0 || rating > 10)) {
         throw new Error("রেটিং ০ থেকে ১০-এর মধ্যে হতে হবে।");
       }
 
@@ -775,18 +580,14 @@
     });
 
     async function getRows(table, dateColumn) {
-      if (!currentUser) return [];
+      const user = await requireUser();
+      if (!user) return [];
 
-      let query = client
-        .from(table)
+      let query = client.from(table)
         .select("*")
-        .eq("user_id", currentUser.id);
+        .eq("user_id", user.id);
 
-      if (dateColumn) {
-        query = query.order(dateColumn, { ascending: false });
-      } else {
-        query = query.order("created_at", { ascending: false });
-      }
+      query = query.order(dateColumn || "created_at", { ascending: false });
 
       const { data, error } = await query.limit(500);
       if (error) throw error;
@@ -794,7 +595,7 @@
     }
 
     async function refreshDashboard() {
-      if (!currentUser) return;
+      if (!currentUser || redirecting) return;
 
       try {
         const [daily, learning, finance] = await Promise.all([
@@ -803,16 +604,15 @@
           getRows("finance_logs", "entry_date")
         ]);
 
-        const date = today();
-        const todayLogs = daily.filter(row => row.log_date === date);
+        if (!currentUser || redirecting) return;
+
+        const todayLogs = daily.filter(row => row.log_date === today());
         const totalMinutes = learning.reduce(
           (sum, row) => sum + Number(row.minutes || 0), 0
         );
-
         const totalIncome = finance
           .filter(row => row.entry_type === "income")
           .reduce((sum, row) => sum + Number(row.amount || 0), 0);
-
         const totalExpense = finance
           .filter(row => row.entry_type === "expense")
           .reduce((sum, row) => sum + Number(row.amount || 0), 0);
@@ -825,7 +625,7 @@
 
         await refreshRecords();
       } catch (error) {
-        formError(error);
+        if (!redirecting) formError(error);
       }
     }
 
@@ -836,12 +636,11 @@
           <small>${escapeHTML(date || "")}</small>
           <p>${escapeHTML(details || "বিস্তারিত নেই")}</p>
           ${extra ? `<small>${escapeHTML(extra)}</small>` : ""}
-        </article>
-      `;
+        </article>`;
     }
 
     async function refreshRecords() {
-      if (!currentUser) return;
+      if (!currentUser || redirecting) return;
 
       const table = $("recordType").value;
       const list = $("recordsList");
@@ -857,6 +656,8 @@
         };
 
         const rows = await getRows(table, dateColumns[table]);
+        if (!currentUser || redirecting) return;
+
         if (!rows.length) {
           list.innerHTML = '<div class="empty">এখনো কোনো রেকর্ড নেই।</div>';
           return;
@@ -864,86 +665,73 @@
 
         list.innerHTML = rows.map(row => {
           if (table === "daily_logs") {
-            return recordCard(
-              row.title, row.log_date, row.notes, "মুড: " + (row.mood || "—")
-            );
+            return recordCard(row.title, row.log_date, row.notes,
+              "মুড: " + (row.mood || "—"));
           }
 
           if (table === "learning_logs") {
-            return recordCard(
-              row.subject, row.learning_date, row.notes,
-              Number(row.minutes || 0) + " মিনিট"
-            );
+            return recordCard(row.subject, row.learning_date, row.notes,
+              Number(row.minutes || 0) + " মিনিট");
           }
 
           if (table === "finance_logs") {
-            return recordCard(
-              row.category, row.entry_date, row.notes,
-              (row.entry_type === "income" ? "আয়: " : "ব্যয়: ") + money(row.amount)
-            );
+            return recordCard(row.category, row.entry_date, row.notes,
+              (row.entry_type === "income" ? "আয়: " : "ব্যয়: ") + money(row.amount));
           }
 
           if (table === "goals") {
             const status = {
-              active: "চলমান",
-              completed: "সম্পন্ন",
-              paused: "স্থগিত"
+              active: "চলমান", completed: "সম্পন্ন", paused: "স্থগিত"
             }[row.status] || row.status;
-
-            return recordCard(
-              row.title, row.target_date || "তারিখ নির্ধারিত নয়",
-              row.description, "অবস্থা: " + status
-            );
+            return recordCard(row.title, row.target_date || "তারিখ নির্ধারিত নয়",
+              row.description, "অবস্থা: " + status);
           }
 
-          return recordCard(
-            row.title,
-            row.watched_date,
-            row.summary,
+          return recordCard(row.title, row.watched_date, row.summary,
             (row.content_type === "series" ? "সিরিজ" : "মুভি") +
             (row.rating !== null && row.rating !== undefined
-              ? " • রেটিং: " + row.rating + "/10" : "")
-          );
+              ? " • রেটিং: " + row.rating + "/10" : ""));
         }).join("");
       } catch (error) {
+        if (redirecting) return;
         console.error(error);
-        list.innerHTML =
-          '<div class="empty">রেকর্ড লোড হয়নি: ' +
+        list.innerHTML = '<div class="empty">রেকর্ড লোড হয়নি: ' +
           escapeHTML(error.message || "অজানা সমস্যা") + '</div>';
       }
     }
 
     $("tabs").addEventListener("click", event => {
       const button = event.target.closest("[data-page]");
-      if (!button) return;
+      if (!button || !currentUser || redirecting) return;
 
       document.querySelectorAll(".tab").forEach(tab => {
         tab.classList.toggle("active", tab === button);
       });
-
       document.querySelectorAll(".page").forEach(page => {
-        page.classList.toggle(
-          "hidden",
-          page.id !== "page-" + button.dataset.page
-        );
+        page.classList.toggle("hidden", page.id !== "page-" + button.dataset.page);
       });
 
       if (button.dataset.page === "records") refreshRecords();
     });
 
-    $("recordType").addEventListener("change", refreshRecords);
-    $("refreshBtn").addEventListener("click", refreshRecords);
+    $("recordType").addEventListener("change", () => {
+      if (currentUser && !redirecting) refreshRecords();
+    });
+
+    $("refreshBtn").addEventListener("click", () => {
+      if (currentUser && !redirecting) refreshRecords();
+    });
 
     $("logoutBtn").addEventListener("click", async () => {
-      $("logoutBtn").disabled = true;
+      if (!client || redirecting) return;
 
+      $("logoutBtn").disabled = true;
       try {
         const { error } = await client.auth.signOut();
         if (error) throw error;
-        showLoggedOut("তুমি সফলভাবে লগআউট করেছ।");
+        goToLogin();
       } catch (error) {
         formError(error);
-      } finally {
         $("logoutBtn").disabled = false;
       }
     });
@@ -951,31 +739,50 @@
     async function start() {
       setDefaultDates();
 
+      // লাইব্রেরি লোড না হলে সুরক্ষিত পেজে থাকা যাবে না।
       if (!window.supabase) {
-        setStatus("Supabase লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করো।", "error");
+        goToLogin();
         return;
       }
 
       try {
-        const ok = await requireUser();
-        if (ok) await refreshDashboard();
+        client = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY,
+          {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+              storageKey: "sb-bskzevsuyzfuycgxnpwb-auth-token"
+            }
+          }
+        );
+
+        // প্রথমে সেশন যাচাই, তারপরেই পেজ ও ডেটা দেখানো।
+        const user = await requireUser();
+        if (!user) return;
+
+        showLoggedIn(user);
+        await refreshDashboard();
+
+        // পরবর্তীতে সাইন আউট বা সেশন হারালে লগইন পেজে পাঠাও।
+        client.auth.onAuthStateChange((event, session) => {
+          if (event === "SIGNED_OUT" || !session?.user) {
+            goToLogin();
+            return;
+          }
+
+          currentUser = session.user;
+          $("userEmail").textContent = session.user.email || "ইমেইল পাওয়া যায়নি";
+        });
       } catch (error) {
         console.error(error);
-        showLoggedOut("Supabase সংযোগে সমস্যা: " + (error.message || "অজানা সমস্যা"));
+        goToLogin();
       }
-
-      // একই ব্রাউজারে সেশন বদলালে ড্যাশবোর্ড আপডেট হবে।
-      client.auth.onAuthStateChange((event, session) => {
-        if (session?.user) {
-          showLoggedIn(session.user);
-          setTimeout(() => refreshDashboard(), 0);
-        } else {
-          showLoggedOut("লগইন সেশন পাওয়া যায়নি। প্রথমে লগইন করো।");
-        }
-      });
     }
 
     start();
   </script>
 </body>
-</html>
+                                                          </html>
