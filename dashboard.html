@@ -71,7 +71,7 @@
           <div class="stat"><div class="label">বাকি</div><div id="overviewGoalRemaining" class="value">০</div></div>
           <div class="stat"><div class="label">দেখার সময়</div><div id="watchTimeTotal" class="value">০ মি.</div></div>
         </div><div id="overviewMotivation" class="motivation">একটি লক্ষ্য যোগ করো—ছোট পদক্ষেপও অগ্রগতি।</div></div>
-        <div class="panel"><h2>আজকের লক্ষ্য-রিমাইন্ডার</h2><div id="overviewGoalAlerts" class="goal-list"><div class="empty">লোড হচ্ছে…</div></div></div>
+        <div class="panel"><div class="section-head"><h2>আজকের লক্ষ্য-রিমাইন্ডার</h2><button id="enableGoalNotificationsBtn" class="secondary" type="button">🔔 নোটিফিকেশন চালু করো</button></div><p id="goalNotificationStatus" class="record-meta">ব্রাউজার নোটিফিকেশন বন্ধ আছে। চালু করতে বোতামটি চাপো।</p><div id="overviewGoalAlerts" class="goal-list"><div class="empty">লোড হচ্ছে…</div></div></div>
       </section>
 
       <section id="page-daily" class="page">
@@ -238,6 +238,62 @@
         <div class="motivation"><span class="badge ${nudge.kind}">${nudge.kind==="good"?"ভালো":nudge.kind==="warn"?"মনে করিয়ে দিচ্ছি":"মনোযোগ দাও"}</span> ${escapeHTML(nudge.text)}</div>
         ${!done?`<div class="goal-actions"><button type="button" data-action="progress" data-id="${escapeHTML(goal.id)}">আজ অগ্রগতি লিখি</button><button type="button" class="success" data-action="complete" data-id="${escapeHTML(goal.id)}">✓ সম্পন্ন</button><button type="button" class="secondary" data-action="extend" data-id="${escapeHTML(goal.id)}">তারিখ বাড়াও</button>${goal.status==="paused"?`<button type="button" class="secondary" data-action="resume" data-id="${escapeHTML(goal.id)}">আবার শুরু</button>`:`<button type="button" class="secondary" data-action="pause" data-id="${escapeHTML(goal.id)}">বিরতি</button>`}</div>`:`<div class="goal-actions"><button type="button" class="secondary" data-action="reopen" data-id="${escapeHTML(goal.id)}">আবার চালু করো</button></div>`}</article>`;
     }
+    const GOAL_NOTIFICATION_STORAGE_KEY = "lifeos-goal-notifications-v1";
+    function readGoalNotificationHistory(){
+      try { return JSON.parse(localStorage.getItem(GOAL_NOTIFICATION_STORAGE_KEY) || "{}"); }
+      catch (_) { return {}; }
+    }
+    function saveGoalNotificationHistory(history){
+      try { localStorage.setItem(GOAL_NOTIFICATION_STORAGE_KEY, JSON.stringify(history)); }
+      catch (error) { console.warn("Notification history could not be saved", error); }
+    }
+    function setGoalNotificationStatus(message){
+      const el=$("goalNotificationStatus"); if(el) el.textContent=message;
+      const button=$("enableGoalNotificationsBtn");
+      if(button) button.textContent=("Notification" in window && Notification.permission==="granted")?"🔔 নোটিফিকেশন চালু আছে":"🔔 নোটিফিকেশন চালু করো";
+    }
+    async function enableGoalBrowserNotifications(){
+      if(!("Notification" in window)){
+        setGoalNotificationStatus("এই ব্রাউজারে নোটিফিকেশন সমর্থিত নয়। Chrome-এ LIFEOS খুলে চেষ্টা করো।");
+        showNotice("এই ব্রাউজারে নোটিফিকেশন সমর্থিত নয়।","error"); return;
+      }
+      if(!window.isSecureContext){
+        setGoalNotificationStatus("নোটিফিকেশনের জন্য HTTPS ঠিকানা থেকে LIFEOS খুলতে হবে।");
+        showNotice("HTTPS ঠিকানা থেকে LIFEOS খুলে আবার চেষ্টা করো।","error"); return;
+      }
+      try{
+        const permission=Notification.permission==="default"?await Notification.requestPermission():Notification.permission;
+        if(permission!=="granted"){
+          setGoalNotificationStatus(permission==="denied"?"ব্রাউজার নোটিফিকেশন অনুমতি বন্ধ করেছে। ব্রাউজারের Site settings থেকে অনুমতি চালু করো।":"নোটিফিকেশনের অনুমতি দেওয়া হয়নি।");
+          showNotice("নোটিফিকেশন অনুমতি পাওয়া যায়নি।","error"); return;
+        }
+        setGoalNotificationStatus("নোটিফিকেশন চালু আছে। LIFEOS খোলা থাকলে লক্ষ্য-রিমাইন্ডার দেখাবে।");
+        new Notification("LIFEOS নোটিফিকেশন চালু হয়েছে",{body:"লক্ষ্যের জরুরি রিমাইন্ডার এখানে দেখানো হবে।",tag:"lifeos-notification-enabled"});
+        await refreshGoals();
+      }catch(error){
+        console.error(error); setGoalNotificationStatus("নোটিফিকেশন চালু করা যায়নি। ব্রাউজারের অনুমতি পরীক্ষা করো।");
+        showNotice("নোটিফিকেশন চালু করা যায়নি।","error");
+      }
+    }
+    function notifyGoalAlertsIfEnabled(goals){
+      if(!("Notification" in window) || Notification.permission!=="granted") return;
+      const today=todayISO(), history=readGoalNotificationHistory();
+      const eligible=goals.filter(g=>g.status!=="completed"&&g.status!=="paused"&&g.reminder_enabled!==false)
+        .map(g=>({goal:g,nudge:goalNudge(g)}))
+        .filter(item=>item.nudge.kind==="bad"||item.nudge.kind==="warn")
+        .slice(0,5);
+      eligible.forEach(({goal,nudge})=>{
+        const key=`${goal.id}:${today}`;
+        if(history[key]) return;
+        try{
+          new Notification(`LIFEOS: ${goal.title}`,{body:nudge.text,tag:`lifeos-goal-${goal.id}-${today}`,renotify:false});
+          history[key]=Date.now();
+        }catch(error){console.warn("Goal notification could not be shown",error);}
+      });
+      const keys=Object.keys(history);
+      if(keys.length>250) keys.sort((a,b)=>(history[a]||0)-(history[b]||0)).slice(0,keys.length-200).forEach(key=>delete history[key]);
+      saveGoalNotificationHistory(history);
+    }
     async function refreshGoals(){
       const {data,error}=await supabase.from("goals").select("*").eq("user_id",user.id).order("created_at",{ascending:false}); if(error) throw error; allGoals=data||[];
       const {data:progressData,error:progressError}=await supabase.from("goal_progress").select("id,goal_id,progress_date,note,created_at").eq("user_id",user.id).order("progress_date",{ascending:false});
@@ -251,6 +307,9 @@
       $("goalsList").innerHTML=allGoals.length?allGoals.map(goalCardHTML).join(""):'<div class="empty">এখনও কোনো লক্ষ্য নেই। উপরে গিয়ে প্রথম লক্ষ্যটি যোগ করো।</div>';
       const alerts=allGoals.filter(g=>g.status!=="completed"&&g.reminder_enabled!==false).slice(0,5);
       $("overviewGoalAlerts").innerHTML=alerts.length?alerts.map(g=>{const n=goalNudge(g);return `<div class="record"><h3>${escapeHTML(g.title)}</h3><p>${escapeHTML(n.text)}</p><p class="record-meta">${escapeHTML(getEffectiveDeadline(g)?`সময়সীমা: ${formatDate(getEffectiveDeadline(g))}`:"সময়সীমা নির্ধারণ করো")}</p></div>`;}).join(""):'<div class="empty">এখন কোনো রিমাইন্ডার নেই। নতুন লক্ষ্য যোগ করতে পারো।</div>';
+      notifyGoalAlertsIfEnabled(allGoals);
+      if("Notification" in window && Notification.permission==="granted") setGoalNotificationStatus("নোটিফিকেশন চালু আছে। LIFEOS খোলা থাকলে লক্ষ্য-রিমাইন্ডার দেখাবে।");
+      else if("Notification" in window && Notification.permission==="denied") setGoalNotificationStatus("ব্রাউজারের সেটিংসে নোটিফিকেশন অনুমতি বন্ধ আছে।");
     }
     let goalActionResolver = null;
     function closeGoalActionModal(result=null){
@@ -343,6 +402,9 @@
 
     document.querySelectorAll(".tabs button[data-page]").forEach(button=>button.addEventListener("click",()=>switchPage(button.dataset.page)));
     $("recordType").addEventListener("change",()=>refreshRecords().catch(e=>showNotice("রেকর্ড লোড হয়নি: "+e.message,"error")));
+    $("enableGoalNotificationsBtn").addEventListener("click",enableGoalBrowserNotifications);
+    if("Notification" in window && Notification.permission==="granted") setGoalNotificationStatus("নোটিফিকেশন চালু আছে। LIFEOS খোলা থাকলে লক্ষ্য-রিমাইন্ডার দেখাবে.");
+    else if("Notification" in window && Notification.permission==="denied") setGoalNotificationStatus("ব্রাউজারের সেটিংসে নোটিফিকেশন অনুমতি বন্ধ আছে।");
     $("refreshBtn").addEventListener("click",()=>refreshDashboard().then(()=>showNotice("ড্যাশবোর্ড আপডেট হয়েছে।","ok")).catch(e=>showNotice("ড্যাশবোর্ড লোড হয়নি: "+e.message,"error")));
     $("recordsRefreshBtn").addEventListener("click",()=>refreshRecords().catch(e=>showNotice("রেকর্ড লোড হয়নি: "+e.message,"error")));
     $("logoutBtn").addEventListener("click",async()=>{const {error}=await supabase.auth.signOut();if(error){showNotice("লগআউট করা যায়নি: "+error.message,"error");return;}location.replace("/");});
