@@ -2,787 +2,272 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#111827">
-  <title>LIFEOS — Personal Dashboard</title>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1220">
+  <title>LIFEOS — Dashboard</title>
   <style>
-    :root {
-      --bg:#f3f5fa; --card:#fff; --text:#172033;
-      --muted:#6b7280; --primary:#5b5ce2;
-      --border:#e5e7eb; --danger:#dc2626; --success:#15803d;
-    }
-    * { box-sizing:border-box; }
-    body {
-      margin:0; font-family:Arial,"Noto Sans Bengali",sans-serif;
-      background:var(--bg); color:var(--text);
-      visibility:hidden;
-    }
-    /* সেশন যাচাই হওয়ার পরই পেজ দৃশ্যমান হবে */
-    body.authenticated { visibility:visible; }
-    button,input,textarea,select { font:inherit; }
-    button { cursor:pointer; }
-    .topbar {
-      background:#111827; color:white; padding:16px;
-      display:flex; justify-content:space-between;
-      align-items:center; gap:12px; flex-wrap:wrap;
-    }
-    .brand { font-size:23px; font-weight:800; letter-spacing:1px; }
-    .brand span { color:#a5b4fc; }
-    .topbar small {
-      display:block; color:#cbd5e1; margin-top:5px;
-      overflow-wrap:anywhere;
-    }
-    .top-actions { display:flex; gap:8px; flex-wrap:wrap; }
-    .top-actions button {
-      border:1px solid #475569; background:#1f2937;
-      color:white; padding:9px 12px; border-radius:9px;
-    }
-    .container { width:min(1150px,100%); margin:auto; padding:18px; }
-    .welcome { margin:8px 0 20px; }
-    .welcome h1 { font-size:25px; margin:0 0 8px; }
-    .welcome p { color:var(--muted); margin:0; line-height:1.6; }
-    .notice {
-      background:#fff7ed; border:1px solid #fed7aa; color:#9a3412;
-      border-radius:12px; padding:14px; margin:14px 0;
-      overflow-wrap:anywhere;
-    }
-    .notice.ok { background:#f0fdf4; border-color:#bbf7d0; color:#166534; }
-    .notice.error { background:#fef2f2; border-color:#fecaca; color:#991b1b; }
-    .stats {
-      display:grid; grid-template-columns:repeat(4,minmax(0,1fr));
-      gap:12px; margin-bottom:20px;
-    }
-    .stat,.panel {
-      background:var(--card); border:1px solid var(--border);
-      border-radius:15px; padding:17px;
-      box-shadow:0 3px 12px rgba(15,23,42,.035); min-width:0;
-    }
-    .stat .label { font-size:13px; color:var(--muted); }
-    .stat .number {
-      font-size:25px; font-weight:800; margin-top:9px;
-      overflow-wrap:anywhere;
-    }
-    .section-title { font-size:19px; margin:0 0 14px; }
-    .tabs {
-      display:flex; gap:8px; overflow-x:auto;
-      padding:3px 0 13px; margin-bottom:4px;
-    }
-    .tab {
-      flex-shrink:0; background:white; border:1px solid var(--border);
-      border-radius:10px; padding:10px 14px; color:var(--text);
-    }
-    .tab.active { background:var(--primary); color:white; border-color:var(--primary); }
-    .panel { margin-bottom:18px; }
-    .form-grid {
-      display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:13px;
-    }
-    .field { display:flex; flex-direction:column; gap:7px; min-width:0; }
-    .field.full { grid-column:1/-1; }
-    label { font-size:14px; font-weight:700; }
-    input,textarea,select {
-      width:100%; padding:11px 12px; border:1px solid #d1d5db;
-      border-radius:9px; background:white; color:var(--text); min-width:0;
-    }
-    textarea { min-height:85px; resize:vertical; }
-    input:focus,textarea:focus,select:focus {
-      outline:2px solid #c7d2fe; border-color:var(--primary);
-    }
-    .primary-btn {
-      background:var(--primary); color:white; border:0;
-      border-radius:10px; padding:12px 17px; font-weight:700;
-    }
-    .secondary-btn {
-      background:white; color:var(--text);
-      border:1px solid var(--border); border-radius:9px; padding:9px 12px;
-    }
-    button:disabled { opacity:.6; cursor:not-allowed; }
-    .form-actions { margin-top:15px; display:flex; gap:9px; flex-wrap:wrap; }
-    .record-list { display:grid; gap:10px; }
-    .record {
-      padding:13px; border:1px solid var(--border);
-      border-radius:11px; background:#fff; overflow-wrap:anywhere;
-    }
-    .record strong { display:block; margin-bottom:5px; }
-    .record p {
-      color:var(--muted); font-size:14px; line-height:1.55;
-      margin:5px 0; white-space:pre-wrap;
-    }
-    .record small { color:var(--muted); }
-    .empty {
-      padding:20px; text-align:center; color:var(--muted);
-      border:1px dashed #cbd5e1; border-radius:10px;
-    }
-    .hidden { display:none !important; }
-    .footer { color:var(--muted); text-align:center; padding:22px 10px 30px; font-size:13px; }
-    @media(max-width:760px) {
-      .stats { grid-template-columns:repeat(2,minmax(0,1fr)); }
-      .container { padding:13px; }
-      .stat,.panel { padding:14px; }
-      .welcome h1 { font-size:22px; }
-    }
-    @media(max-width:420px) {
-      .form-grid { grid-template-columns:1fr; }
-      .field.full { grid-column:auto; }
-      .stat .number { font-size:21px; }
-    }
+    :root{color-scheme:dark;--bg:#0b1220;--panel:#121c2e;--panel2:#17243a;--text:#edf3ff;--muted:#9eacc4;--line:#2a3a55;--accent:#7c9cff;--good:#5ee0a0;--warn:#ffc76a;--bad:#ff8585}
+    *{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#14213b 0%,var(--bg) 55%)}
+    #app{display:none;max-width:1100px;margin:auto;padding:18px 14px 40px}body.authenticated #app{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-size:1.5rem;font-weight:850;letter-spacing:.3px}.brand span{color:var(--accent)}.sub{color:var(--muted);font-size:.92rem;margin-top:3px}.panel{background:rgba(18,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px #0002}.panel h2,.panel h3{margin:0 0 12px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(8px)}button, input,select,textarea{font:inherit}button{border:0;border-radius:11px;padding:10px 13px;background:var(--accent);color:#071022;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.tabs button{white-space:nowrap;background:var(--panel2);color:var(--text);border:1px solid var(--line)}.tabs button.active{background:var(--accent);color:#071022;border-color:var(--accent)}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.danger{background:#4a202b;color:#ffdfe2}.success{background:#164533;color:#d7ffea}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:13px;min-width:0}.stat .label{font-size:.85rem;color:var(--muted)}.stat .value{font-size:1.45rem;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:.92rem;color:#d5e0f4}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#0b1424;color:var(--text);padding:11px;border-radius:10px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}.field textarea{min-height:84px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.notice{display:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0;white-space:pre-wrap}.notice.show{display:block}.notice.error{border-color:#a64755;background:#361b26;color:#ffdfe2}.notice.ok{border-color:#277a59;background:#123528;color:#d7ffea}.record-list,.goal-list{display:grid;gap:10px}.record,.goal-card{border:1px solid var(--line);background:#0d1728;border-radius:14px;padding:13px;min-width:0}.record h3,.goal-card h3{margin:0 0 5px;font-size:1.03rem;overflow-wrap:anywhere}.record p,.goal-card p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}.record-meta{color:var(--muted);font-size:.86rem}.badge{display:inline-block;border-radius:999px;padding:4px 9px;background:#263754;color:#dce8ff;font-size:.8rem;margin:2px 4px 2px 0}.badge.good{background:#164533;color:#d7ffea}.badge.warn{background:#4a371c;color:#ffe7b5}.badge.bad{background:#4a202b;color:#ffdfe2}.goal-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.motivation{line-height:1.65;border-left:3px solid var(--accent);padding:10px 12px;background:#101e33;border-radius:0 10px 10px 0;margin-top:12px}.checkline{display:flex;align-items:center;gap:9px}.checkline input{width:18px;height:18px;accent-color:var(--accent)}.empty{border:1px dashed var(--line);padding:18px;border-radius:12px;color:var(--muted);text-align:center}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.small{font-size:.84rem}.hidden{display:none!important}
+    @media(max-width:680px){#app{padding:13px 10px 30px}.grid,.form-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:13px}.brand{font-size:1.3rem}.tabs{margin:0 -10px;padding-left:10px;padding-right:10px}}
   </style>
 </head>
-
 <body>
-  <header class="topbar">
-    <div>
-      <div class="brand">LIFE<span>OS</span></div>
-      <small>Personal Life Management System</small>
-    </div>
-    <div class="top-actions">
-      <button id="logoutBtn" type="button">লগআউট</button>
-    </div>
-  </header>
+  <div id="app">
+    <header class="topbar">
+      <div><div class="brand">LIFE<span>OS</span></div><div class="sub">নিজের সময়, লক্ষ্য ও জীবনকে গুছিয়ে রাখো</div></div>
+      <button id="logoutBtn" class="secondary" type="button">লগআউট</button>
+    </header>
+    <div id="notice" class="notice" role="status" aria-live="polite"></div>
+    <nav class="tabs" aria-label="Dashboard sections">
+      <button type="button" data-page="overview" class="active">ড্যাশবোর্ড</button>
+      <button type="button" data-page="daily">দৈনিক কাজ</button>
+      <button type="button" data-page="learning">শেখা</button>
+      <button type="button" data-page="finance">আয়-ব্যয়</button>
+      <button type="button" data-page="goals">লক্ষ্য</button>
+      <button type="button" data-page="watch">মুভি/সিরিজ</button>
+      <button type="button" data-page="records">সব রেকর্ড</button>
+    </nav>
 
-  <main class="container">
-    <div class="welcome">
-      <h1>তোমার ব্যক্তিগত ড্যাশবোর্ড 👋</h1>
-      <p>জীবন, শেখা, আয়-ব্যয়, লক্ষ্য এবং দৈনন্দিন কাজ এক জায়গায় পরিচালনা করো।</p>
-    </div>
-
-    <div id="status" class="notice">লগইন যাচাই করা হচ্ছে...</div>
-
-    <div id="app" class="hidden">
-      <div class="panel">
-        <strong>লগইন করা অ্যাকাউন্ট</strong>
-        <p id="userEmail" style="overflow-wrap:anywhere;margin-bottom:0"></p>
-      </div>
-
-      <section class="stats">
-        <div class="stat">
-          <div class="label">আজকের জার্নাল</div>
-          <div class="number" id="dailyCount">০</div>
-        </div>
-        <div class="stat">
-          <div class="label">মোট শেখার সময়</div>
-          <div class="number" id="learningMinutes">০ মিনিট</div>
-        </div>
-        <div class="stat">
-          <div class="label">মোট আয়</div>
-          <div class="number" id="incomeTotal">৳০</div>
-        </div>
-        <div class="stat">
-          <div class="label">মোট ব্যয়</div>
-          <div class="number" id="expenseTotal">৳০</div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <h2 class="section-title">দ্রুত নেভিগেশন</h2>
-        <div class="tabs" id="tabs">
-          <button class="tab active" data-page="daily">📝 জার্নাল</button>
-          <button class="tab" data-page="learning">📚 শেখা</button>
-          <button class="tab" data-page="finance">💰 আয়-ব্যয়</button>
-          <button class="tab" data-page="goals">🎯 লক্ষ্য</button>
-          <button class="tab" data-page="watch">🎬 দেখা</button>
-          <button class="tab" data-page="records">📋 রেকর্ড</button>
-        </div>
-      </section>
-
-      <section class="page" id="page-daily">
-        <div class="panel">
-          <h2 class="section-title">আজকের জার্নাল</h2>
-          <form id="dailyForm">
-            <div class="form-grid">
-              <div class="field">
-                <label for="dailyDate">তারিখ</label>
-                <input id="dailyDate" type="date" required>
-              </div>
-              <div class="field">
-                <label for="dailyMood">আজকের মুড</label>
-                <select id="dailyMood">
-                  <option value="ভালো">ভালো</option>
-                  <option value="মোটামুটি">মোটামুটি</option>
-                  <option value="খারাপ">খারাপ</option>
-                  <option value="চিন্তিত">চিন্তিত</option>
-                  <option value="অনুপ্রাণিত">অনুপ্রাণিত</option>
-                </select>
-              </div>
-              <div class="field full">
-                <label for="dailyTitle">আজকের শিরোনাম</label>
-                <input id="dailyTitle" maxlength="200" placeholder="আজ কী করলে?" required>
-              </div>
-              <div class="field full">
-                <label for="dailyNotes">বিস্তারিত</label>
-                <textarea id="dailyNotes" placeholder="দিনের ঘটনা, অভিজ্ঞতা বা আগামীকালের পরিকল্পনা"></textarea>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit">জার্নাল সেভ করো</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="page hidden" id="page-learning">
-        <div class="panel">
-          <h2 class="section-title">Learning Log</h2>
-          <form id="learningForm">
-            <div class="form-grid">
-              <div class="field">
-                <label for="learningDate">তারিখ</label>
-                <input id="learningDate" type="date" required>
-              </div>
-              <div class="field">
-                <label for="learningMinutesInput">কত মিনিট শিখেছ?</label>
-                <input id="learningMinutesInput" type="number" min="0" step="1" required placeholder="৩০">
-              </div>
-              <div class="field full">
-                <label for="learningSubject">বিষয়</label>
-                <input id="learningSubject" maxlength="200" required placeholder="যেমন: ইংরেজি, জাপানি, কম্পিউটার">
-              </div>
-              <div class="field full">
-                <label for="learningNotes">নোট</label>
-                <textarea id="learningNotes" placeholder="আজ কী শিখলে?"></textarea>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit">শেখার তথ্য সেভ করো</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="page hidden" id="page-finance">
-        <div class="panel">
-          <h2 class="section-title">আয় ও ব্যয়ের হিসাব</h2>
-          <form id="financeForm">
-            <div class="form-grid">
-              <div class="field">
-                <label for="financeDate">তারিখ</label>
-                <input id="financeDate" type="date" required>
-              </div>
-              <div class="field">
-                <label for="financeType">ধরন</label>
-                <select id="financeType" required>
-                  <option value="income">আয়</option>
-                  <option value="expense">ব্যয়</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="financeCategory">ক্যাটাগরি</label>
-                <input id="financeCategory" maxlength="100" required placeholder="যেমন: বেতন, খাবার, যাতায়াত">
-              </div>
-              <div class="field">
-                <label for="financeAmount">টাকার পরিমাণ (৳)</label>
-                <input id="financeAmount" type="number" min="0.01" step="0.01" required placeholder="১০০০">
-              </div>
-              <div class="field full">
-                <label for="financeNotes">বিবরণ</label>
-                <textarea id="financeNotes" placeholder="অতিরিক্ত তথ্য"></textarea>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit">হিসাব সেভ করো</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="page hidden" id="page-goals">
-        <div class="panel">
-          <h2 class="section-title">আমার লক্ষ্য</h2>
-          <form id="goalsForm">
-            <div class="form-grid">
-              <div class="field full">
-                <label for="goalTitle">লক্ষ্যের নাম</label>
-                <input id="goalTitle" maxlength="200" required placeholder="যেমন: ইংরেজি শেখা, ব্যবসা শুরু">
-              </div>
-              <div class="field">
-                <label for="goalDate">লক্ষ্য পূরণের তারিখ</label>
-                <input id="goalDate" type="date">
-              </div>
-              <div class="field">
-                <label for="goalStatus">অবস্থা</label>
-                <select id="goalStatus">
-                  <option value="active">চলমান</option>
-                  <option value="completed">সম্পন্ন</option>
-                  <option value="paused">স্থগিত</option>
-                </select>
-              </div>
-              <div class="field full">
-                <label for="goalDescription">বিস্তারিত পরিকল্পনা</label>
-                <textarea id="goalDescription" placeholder="কীভাবে লক্ষ্য পূরণ করবে?"></textarea>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit">লক্ষ্য সেভ করো</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="page hidden" id="page-watch">
-        <div class="panel">
-          <h2 class="section-title">Movie / Series Log</h2>
-          <form id="watchForm">
-            <div class="form-grid">
-              <div class="field full">
-                <label for="watchTitle">মুভি বা সিরিজের নাম</label>
-                <input id="watchTitle" maxlength="200" required>
-              </div>
-              <div class="field">
-                <label for="watchType">ধরন</label>
-                <select id="watchType">
-                  <option value="movie">মুভি</option>
-                  <option value="series">সিরিজ</option>
-                </select>
-              </div>
-              <div class="field">
-                <label for="watchEpisode">এপিসোড / পর্ব</label>
-                <input id="watchEpisode" maxlength="100" placeholder="ঐচ্ছিক">
-              </div>
-              <div class="field">
-                <label for="watchDate">দেখার তারিখ</label>
-                <input id="watchDate" type="date" required>
-              </div>
-              <div class="field">
-                <label for="watchRating">রেটিং (০–১০)</label>
-                <input id="watchRating" type="number" min="0" max="10" step="0.1" placeholder="৮">
-              </div>
-              <div class="field full">
-                <label for="watchSummary">রিভিউ / নোট</label>
-                <textarea id="watchSummary" placeholder="কেমন লাগল?"></textarea>
-              </div>
-            </div>
-            <div class="form-actions">
-              <button class="primary-btn" type="submit">রেকর্ড সেভ করো</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
-      <section class="page hidden" id="page-records">
-        <div class="panel">
-          <h2 class="section-title">সাম্প্রতিক রেকর্ড</h2>
-          <div class="field" style="margin-bottom:14px">
-            <label for="recordType">কোন রেকর্ড দেখতে চাও?</label>
-            <select id="recordType">
-              <option value="daily_logs">জার্নাল</option>
-              <option value="learning_logs">শেখার রেকর্ড</option>
-              <option value="finance_logs">আয়-ব্যয়</option>
-              <option value="goals">লক্ষ্য</option>
-              <option value="watch_logs">মুভি / সিরিজ</option>
-            </select>
-          </div>
-          <button class="secondary-btn" id="refreshBtn" type="button">রেকর্ড রিফ্রেশ</button>
-          <div id="recordsList" class="record-list" style="margin-top:14px">
-            <div class="empty">রেকর্ড লোড হচ্ছে...</div>
+    <main>
+      <section id="page-overview" class="page active">
+        <div class="panel"><div class="section-head"><div><h2>আজকের সারাংশ</h2><div class="muted" id="todayLabel"></div></div><button id="refreshBtn" class="secondary" type="button">রিফ্রেশ</button></div>
+          <div class="stat-grid" style="margin-top:14px">
+            <div class="stat"><div class="label">আজকের কাজ</div><div id="dailyCount" class="value">—</div></div>
+            <div class="stat"><div class="label">মোট শেখা</div><div id="learningTimeTotal" class="value">—</div></div>
+            <div class="stat"><div class="label">মোট আয়</div><div id="incomeTotal" class="value">৳০</div></div>
+            <div class="stat"><div class="label">মোট ব্যয়</div><div id="expenseTotal" class="value">৳০</div></div>
           </div>
         </div>
+        <div class="panel"><h2>লক্ষ্যের অবস্থা</h2><div class="stat-grid">
+          <div class="stat"><div class="label">মোট লক্ষ্য</div><div id="overviewGoalTotal" class="value">০</div></div>
+          <div class="stat"><div class="label">সম্পন্ন</div><div id="overviewGoalDone" class="value">০</div></div>
+          <div class="stat"><div class="label">বাকি</div><div id="overviewGoalRemaining" class="value">০</div></div>
+          <div class="stat"><div class="label">দেখার সময়</div><div id="watchTimeTotal" class="value">০ মি.</div></div>
+        </div><div id="overviewMotivation" class="motivation">একটি লক্ষ্য যোগ করো—ছোট পদক্ষেপও অগ্রগতি।</div></div>
+        <div class="panel"><h2>আজকের লক্ষ্য-রিমাইন্ডার</h2><div id="overviewGoalAlerts" class="goal-list"><div class="empty">লোড হচ্ছে…</div></div></div>
       </section>
-    </div>
 
-    <footer class="footer">LIFEOS • Your life, organized.</footer>
-  </main>
+      <section id="page-daily" class="page">
+        <div class="panel"><h2>দৈনিক কাজ লিখে রাখো</h2><form id="dailyForm"><div class="form-grid">
+          <div class="field"><label for="dailyDate">তারিখ</label><input id="dailyDate" type="date" required></div>
+          <div class="field"><label for="dailyMood">আজকের মুড</label><select id="dailyMood"><option value="ভালো">ভালো</option><option value="মোটামুটি">মোটামুটি</option><option value="খারাপ">খারাপ</option><option value="অনুপ্রাণিত">অনুপ্রাণিত</option><option value="ক্লান্ত">ক্লান্ত</option></select></div>
+          <div class="field full"><label for="dailyTitle">আজ কী করেছ?</label><input id="dailyTitle" maxlength="180" required placeholder="যেমন: ৩০ মিনিট হাঁটলাম"></div>
+          <div class="field full"><label for="dailyNotes">বিস্তারিত / নোট (ঐচ্ছিক)</label><textarea id="dailyNotes" placeholder="আজকের অভিজ্ঞতা..."></textarea></div>
+        </div><div class="actions"><button type="submit">রেকর্ড সেভ</button></div></form></div>
+      </section>
 
+      <section id="page-learning" class="page">
+        <div class="panel"><h2>শেখার সময় লিখে রাখো</h2><form id="learningForm"><div class="form-grid">
+          <div class="field"><label for="learningDate">তারিখ</label><input id="learningDate" type="date" required></div>
+          <div class="field"><label for="learningSubject">কী শিখেছ?</label><input id="learningSubject" maxlength="160" required placeholder="যেমন: ইংরেজি"></div>
+          <div class="field"><label for="learningHoursInput">কত ঘণ্টা?</label><input id="learningHoursInput" type="number" min="0" step="1" required value="0"></div>
+          <div class="field"><label for="learningMinutesPartInput">অতিরিক্ত মিনিট (০–৫৯)</label><input id="learningMinutesPartInput" type="number" min="0" max="59" step="1" required value="30"></div>
+          <div class="field full"><label for="learningNotes">নোট (ঐচ্ছিক)</label><textarea id="learningNotes"></textarea></div>
+        </div><div class="actions"><button type="submit">শেখার রেকর্ড সেভ</button></div></form></div>
+      </section>
+
+      <section id="page-finance" class="page">
+        <div class="panel"><h2>আয়-ব্যয়ের হিসাব</h2><form id="financeForm"><div class="form-grid">
+          <div class="field"><label for="financeDate">তারিখ</label><input id="financeDate" type="date" required></div>
+          <div class="field"><label for="financeType">ধরন</label><select id="financeType" required><option value="income">আয়</option><option value="expense">ব্যয়</option></select></div>
+          <div class="field"><label for="financeCategory">ক্যাটাগরি</label><input id="financeCategory" maxlength="100" required placeholder="যেমন: খাবার, বেতন"></div>
+          <div class="field"><label for="financeAmount">টাকার পরিমাণ</label><input id="financeAmount" type="number" min="0.01" step="0.01" required placeholder="৫০০"></div>
+          <div class="field full"><label for="financeNotes">নোট (ঐচ্ছিক)</label><textarea id="financeNotes"></textarea></div>
+        </div><div class="actions"><button type="submit">হিসাব সেভ</button></div></form></div>
+      </section>
+
+      <section id="page-goals" class="page">
+        <div class="panel"><h2>নতুন লক্ষ্য তৈরি করো</h2><form id="goalsForm"><div class="form-grid">
+          <div class="field full"><label for="goalTitle">লক্ষ্যের নাম</label><input id="goalTitle" maxlength="180" required placeholder="যেমন: প্রতিদিন জাপানি শেখা"></div>
+          <div class="field"><label for="goalDate">লক্ষ্য পূরণের তারিখ</label><input id="goalDate" type="date"></div>
+          <div class="field"><label for="goalStatus">অবস্থা</label><select id="goalStatus"><option value="active">চলমান</option><option value="paused">বিরতিতে</option></select></div>
+          <div class="field full"><label for="goalDescription">কেন এই লক্ষ্য / কীভাবে করবে?</label><textarea id="goalDescription" placeholder="ছোট ছোট ধাপে লিখে রাখো..."></textarea></div>
+          <div class="field full"><label class="checkline"><input id="goalReminder" type="checkbox" checked> ড্যাশবোর্ডে দৈনিক রিমাইন্ডার দেখাও</label></div>
+        </div><div class="actions"><button type="submit">লক্ষ্য যোগ করো</button></div></form></div>
+        <div class="panel"><h2>তোমার লক্ষ্যসমূহ</h2><div class="stat-grid">
+          <div class="stat"><div class="label">মোট</div><div id="goalsTotal" class="value">০</div></div>
+          <div class="stat"><div class="label">সম্পন্ন</div><div id="goalsCompleted" class="value">০</div></div>
+          <div class="stat"><div class="label">বাকি</div><div id="goalsRemaining" class="value">০</div></div>
+          <div class="stat"><div class="label">পরের ডেডলাইন</div><div id="goalsDaysLeft" class="value">—</div></div>
+        </div><div id="goalMotivation" class="motivation">প্রতিদিন অল্প অল্প কাজও তোমাকে লক্ষ্যের কাছে নিয়ে যাবে, ইনশাআল্লাহ।</div></div>
+        <div id="goalsList" class="goal-list"><div class="empty">লক্ষ্য লোড হচ্ছে…</div></div>
+      </section>
+
+      <section id="page-watch" class="page">
+        <div class="panel"><h2>মুভি / সিরিজ লগ</h2><form id="watchForm"><div class="form-grid">
+          <div class="field full"><label for="watchTitle">মুভি বা সিরিজের নাম</label><input id="watchTitle" maxlength="180" required></div>
+          <div class="field"><label for="watchType">ধরন</label><select id="watchType"><option value="movie">মুভি</option><option value="series">সিরিজ</option></select></div>
+          <div class="field"><label for="watchEpisode">এপিসোড / সিজন (ঐচ্ছিক)</label><input id="watchEpisode" maxlength="100" placeholder="যেমন: S01 E03"></div>
+          <div class="field"><label for="watchDate">দেখার তারিখ</label><input id="watchDate" type="date" required></div>
+          <div class="field"><label for="watchRating">রেটিং (০–১০, ঐচ্ছিক)</label><input id="watchRating" type="number" min="0" max="10" step="0.5" placeholder="৮"></div>
+          <div class="field"><label for="watchHoursInput">কত ঘণ্টা দেখেছ?</label><input id="watchHoursInput" type="number" min="0" step="1" required value="1"></div>
+          <div class="field"><label for="watchMinutesInput">অতিরিক্ত মিনিট (০–৫৯)</label><input id="watchMinutesInput" type="number" min="0" max="59" step="1" required value="0"></div>
+          <div class="field full"><label for="watchSummary">মন্তব্য (ঐচ্ছিক)</label><textarea id="watchSummary"></textarea></div>
+        </div><div class="actions"><button type="submit">ওয়াচ লগ সেভ</button></div></form></div>
+      </section>
+
+      <section id="page-records" class="page">
+        <div class="panel"><div class="section-head"><h2>সব রেকর্ড</h2><button id="recordsRefreshBtn" class="secondary" type="button">রিফ্রেশ</button></div>
+          <div class="field" style="margin:12px 0"><label for="recordType">কোন রেকর্ড দেখবে?</label><select id="recordType"><option value="daily_logs">দৈনিক কাজ</option><option value="learning_logs">শেখা</option><option value="finance_logs">আয়-ব্যয়</option><option value="goals">লক্ষ্য</option><option value="watch_logs">মুভি/সিরিজ</option></select></div>
+          <div id="recordsList" class="record-list"><div class="empty">রেকর্ড লোড হচ্ছে…</div></div>
+        </div>
+      </section>
+    </main>
+    <footer class="muted small" style="text-align:center;padding:20px 0">LIFEOS · তোমার ব্যক্তিগত জীবন ব্যবস্থাপনা</footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
+  (() => {
     "use strict";
-
     const SUPABASE_URL = "https://bskzevsuyzfuycgxnpwb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_jUL2Ls1DBRvuFiQ26wMXqQ_CmNsMlXm";
-    const LOGIN_URL = "/";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "sb-bskzevsuyzfuycgxnpwb-auth-token" }
+    });
+    const $ = (id) => document.getElementById(id);
+    let user = null;
+    let allGoals = [];
+    let noticeTimer = null;
 
-    let client = null;
-    let currentUser = null;
-    let loading = false;
-    let redirecting = false;
+    function todayISO(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
+    function localDateString(value){ if(!value) return ""; return String(value).slice(0,10); }
+    function dateDiff(from, to=todayISO()) { if(!from) return null; const a = new Date(`${localDateString(from)}T12:00:00`); const b = new Date(`${localDateString(to)}T12:00:00`); if(Number.isNaN(a.getTime()) || Number.isNaN(b.getTime())) return null; return Math.round((b-a)/86400000); }
+    function formatDate(value){ const s=localDateString(value); if(!s) return "তারিখ নেই"; const d=new Date(`${s}T12:00:00`); return Number.isNaN(d.getTime())?s:d.toLocaleDateString("bn-BD",{year:"numeric",month:"short",day:"numeric"}); }
+    function escapeHTML(value){ return String(value ?? "").replace(/[&<>"']/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+    function formatMinutes(total){ const n=Math.max(0,Math.floor(Number(total)||0)); const h=Math.floor(n/60), m=n%60; if(h && m) return `${h} ঘণ্টা ${m} মিনিট`; if(h) return `${h} ঘণ্টা`; return `${m} মিনিট`; }
+    function formatMoney(amount){ return "৳"+(Number(amount)||0).toLocaleString("bn-BD",{maximumFractionDigits:2}); }
+    function showNotice(message, type="ok"){ const el=$("notice"); el.textContent=message; el.className=`notice show ${type}`; if(noticeTimer) clearTimeout(noticeTimer); noticeTimer=setTimeout(()=>{el.className="notice";},6500); }
+    function throwIfError(result){ if(result.error) throw result.error; return result.data; }
+    async function getRows(table, dateColumn){ let query=supabase.from(table).select("*").eq("user_id",user.id); if(dateColumn) query=query.order(dateColumn,{ascending:false}); else query=query.order("created_at",{ascending:false}); const {data,error}=await query; if(error) throw error; return data||[]; }
+    async function insertRecord(table, record){ const {error}=await supabase.from(table).insert({...record,user_id:user.id}); if(error) throw error; showNotice("সফলভাবে সেভ হয়েছে।","ok"); await refreshDashboard(); }
+    function setupForm(formId, handler){ $(formId).addEventListener("submit",async event=>{ event.preventDefault(); const button=$(formId).querySelector('button[type="submit"]'); button.disabled=true; try{ await handler(); $(formId).reset(); setDefaultDates(); if(formId==="goalsForm") $("goalReminder").checked=true; showNotice("তথ্য সেভ হয়েছে।","ok"); }catch(error){ console.error(error); showNotice(`সেভ করা যায়নি: ${error.message||error.details||"অজানা সমস্যা"}`,"error"); }finally{button.disabled=false;} }); }
+    function setDefaultDates(){ ["dailyDate","learningDate","financeDate","watchDate"].forEach(id=>{if($(id)&&!$(id).value) $(id).value=todayISO();}); $("todayLabel").textContent=new Date().toLocaleDateString("bn-BD",{weekday:"long",year:"numeric",month:"long",day:"numeric"}); }
+    function switchPage(name){ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===`page-${name}`)); document.querySelectorAll(".tabs button").forEach(b=>b.classList.toggle("active",b.dataset.page===name)); if(name==="goals") refreshGoals().catch(e=>showNotice("লক্ষ্য লোড হয়নি: "+e.message,"error")); if(name==="records") refreshRecords().catch(e=>showNotice("রেকর্ড লোড হয়নি: "+e.message,"error")); }
 
-    const $ = id => document.getElementById(id);
-
-    function goToLogin() {
-      if (redirecting) return;
-      redirecting = true;
-      currentUser = null;
-      // সেশন না থাকলে বা বাতিল হলে কোনো ড্যাশবোর্ড দেখানো হবে না।
-      window.location.replace(LOGIN_URL);
-    }
-
-    function setStatus(message, type = "") {
-      const box = $("status");
-      box.textContent = message;
-      box.className = "notice" + (type ? " " + type : "");
-    }
-
-    function today() {
-      const d = new Date();
-      return new Date(d.getTime() - d.getTimezoneOffset() * 60000)
-        .toISOString().slice(0, 10);
-    }
-
-    function money(value) {
-      return "৳" + Number(value || 0).toLocaleString("en-BD", {
-        maximumFractionDigits: 2
-      });
-    }
-
-    function escapeHTML(value) {
-      return String(value ?? "").replace(/[&<>"']/g, ch => ({
-        "&": "&amp;", "<": "&lt;", ">": "&gt;",
-        '"': "&quot;", "'": "&#39;"
-      }[ch]));
-    }
-
-    function showLoggedIn(user) {
-      currentUser = user;
-      $("app").classList.remove("hidden");
-      $("userEmail").textContent = user.email || "ইমেইল পাওয়া যায়নি";
-      setStatus("সফলভাবে সংযুক্ত। তোমার LIFEOS ড্যাশবোর্ড প্রস্তুত।", "ok");
-      document.body.classList.add("authenticated");
-    }
-
-    // প্রতিটি সুরক্ষিত কাজের আগে সেশন যাচাই।
-    async function requireUser() {
-      if (!client || redirecting) {
-        goToLogin();
-        return null;
-      }
-
-      const { data, error } = await client.auth.getSession();
-
-      if (error || !data?.session?.user) {
-        goToLogin();
-        return null;
-      }
-
-      currentUser = data.session.user;
-      return currentUser;
-    }
-
-    async function insertRecord(table, record) {
-      const user = await requireUser();
-      if (!user) return;
-
-      const { error } = await client
-        .from(table)
-        .insert({ ...record, user_id: user.id });
-
-      if (error) throw error;
-
-      setStatus("তথ্য সফলভাবে সেভ হয়েছে।", "ok");
-      await refreshDashboard();
-    }
-
-    function formError(error) {
-      console.error(error);
-      if (error?.name === "AuthSessionMissingError") {
-        goToLogin();
-        return;
-      }
-      setStatus(
-        "সেভ করা যায়নি: " + (error.message || "অজানা সমস্যা") +
-        " — টেবিলের কলাম ও Supabase RLS নীতি পরীক্ষা করো।",
-        "error"
-      );
-    }
-
-    async function handleForm(formId, handler) {
-      $(formId).addEventListener("submit", async event => {
-        event.preventDefault();
-        if (loading || redirecting) return;
-
-        loading = true;
-        const button = event.submitter;
-        if (button) button.disabled = true;
-
-        try {
-          const user = await requireUser();
-          if (!user) return;
-
-          await handler();
-          $(formId).reset();
-          setDefaultDates();
-        } catch (error) {
-          formError(error);
-        } finally {
-          loading = false;
-          if (button) button.disabled = false;
-        }
-      });
-    }
-
-    function setDefaultDates() {
-      const date = today();
-      ["dailyDate", "learningDate", "financeDate", "watchDate"]
-        .forEach(id => { $(id).value = date; });
-    }
-
-    handleForm("dailyForm", async () => {
-      await insertRecord("daily_logs", {
-        log_date: $("dailyDate").value,
-        title: $("dailyTitle").value.trim(),
-        notes: $("dailyNotes").value.trim() || null,
-        mood: $("dailyMood").value
-      });
+    setupForm("dailyForm",async()=>{
+      const title=$("dailyTitle").value.trim(); if(!title) throw new Error("কাজের নাম লিখো।");
+      await insertRecord("daily_logs",{log_date:$("dailyDate").value,title,notes:$("dailyNotes").value.trim()||null,mood:$("dailyMood").value});
+    });
+    setupForm("learningForm",async()=>{
+      const hours=Number($("learningHoursInput").value), minutesPart=Number($("learningMinutesPartInput").value);
+      if(!Number.isInteger(hours)||hours<0||!Number.isInteger(minutesPart)||minutesPart<0||minutesPart>59||(hours===0&&minutesPart===0)) throw new Error("সঠিক ঘণ্টা ও মিনিট লিখো।");
+      const totalMinutes=hours*60+minutesPart;
+      await insertRecord("learning_logs",{learning_date:$("learningDate").value,subject:$("learningSubject").value.trim(),hours,minutes:totalMinutes,notes:$("learningNotes").value.trim()||null});
+    });
+    setupForm("financeForm",async()=>{
+      const amount=Number($("financeAmount").value); if(!Number.isFinite(amount)||amount<=0) throw new Error("টাকার পরিমাণ শূন্যের বেশি হতে হবে।");
+      await insertRecord("finance_logs",{entry_date:$("financeDate").value,entry_type:$("financeType").value,category:$("financeCategory").value.trim(),amount,notes:$("financeNotes").value.trim()||null});
+    });
+    setupForm("watchForm",async()=>{
+      const rawRating=$("watchRating").value; const rating=rawRating===""?null:Number(rawRating);
+      if(rating!==null&&(!Number.isFinite(rating)||rating<0||rating>10)) throw new Error("রেটিং ০ থেকে ১০-এর মধ্যে হতে হবে।");
+      const hours=Number($("watchHoursInput").value), minutes=Number($("watchMinutesInput").value);
+      if(!Number.isInteger(hours)||hours<0||!Number.isInteger(minutes)||minutes<0||minutes>59||(hours===0&&minutes===0)) throw new Error("সঠিক ঘণ্টা ও মিনিট লিখো।");
+      await insertRecord("watch_logs",{title:$("watchTitle").value.trim(),content_type:$("watchType").value,episode:$("watchEpisode").value.trim()||null,watched_date:$("watchDate").value,hours,minutes,duration_minutes:hours*60+minutes,summary:$("watchSummary").value.trim()||null,rating});
+    });
+    setupForm("goalsForm",async()=>{
+      const title=$("goalTitle").value.trim(); if(!title) throw new Error("লক্ষ্যের নাম লিখো।");
+      const target=$("goalDate").value||null; if(target&&target<todayISO()) throw new Error("লক্ষ্যের তারিখ আজ বা ভবিষ্যতের দিন দাও।");
+      await insertRecord("goals",{title,description:$("goalDescription").value.trim()||null,target_date:target,status:$("goalStatus").value,reminder_enabled:$("goalReminder").checked,completed_at:null,last_progress_date:null,extended_target_date:null});
     });
 
-    handleForm("learningForm", async () => {
-      const minutes = Number($("learningMinutesInput").value);
-      if (!Number.isFinite(minutes) || minutes < 0) {
-        throw new Error("শেখার মিনিট শূন্য বা তার বেশি হতে হবে।");
-      }
-      await insertRecord("learning_logs", {
-        learning_date: $("learningDate").value,
-        subject: $("learningSubject").value.trim(),
-        minutes,
-        notes: $("learningNotes").value.trim() || null
-      });
-    });
-
-    handleForm("financeForm", async () => {
-      const amount = Number($("financeAmount").value);
-      if (!Number.isFinite(amount) || amount <= 0) {
-        throw new Error("টাকার পরিমাণ শূন্যের চেয়ে বেশি হতে হবে।");
-      }
-      await insertRecord("finance_logs", {
-        entry_date: $("financeDate").value,
-        entry_type: $("financeType").value,
-        category: $("financeCategory").value.trim(),
-        amount,
-        notes: $("financeNotes").value.trim() || null
-      });
-    });
-
-    handleForm("goalsForm", async () => {
-      await insertRecord("goals", {
-        title: $("goalTitle").value.trim(),
-        description: $("goalDescription").value.trim() || null,
-        target_date: $("goalDate").value || null,
-        status: $("goalStatus").value
-      });
-    });
-
-    handleForm("watchForm", async () => {
-      const rawRating = $("watchRating").value;
-      const rating = rawRating === "" ? null : Number(rawRating);
-
-      if (rating !== null &&
-          (!Number.isFinite(rating) || rating < 0 || rating > 10)) {
-        throw new Error("রেটিং ০ থেকে ১০-এর মধ্যে হতে হবে।");
-      }
-
-      await insertRecord("watch_logs", {
-        title: $("watchTitle").value.trim(),
-        content_type: $("watchType").value,
-        episode: $("watchEpisode").value.trim() || null,
-        watched_date: $("watchDate").value,
-        summary: $("watchSummary").value.trim() || null,
-        rating
-      });
-    });
-
-    async function getRows(table, dateColumn) {
-      const user = await requireUser();
-      if (!user) return [];
-
-      let query = client.from(table)
-        .select("*")
-        .eq("user_id", user.id);
-
-      query = query.order(dateColumn || "created_at", { ascending: false });
-
-      const { data, error } = await query.limit(500);
-      if (error) throw error;
-      return data || [];
+    async function refreshDashboard(){
+      const [daily,learning,finance,watch,goals]=await Promise.all([getRows("daily_logs","log_date"),getRows("learning_logs","learning_date"),getRows("finance_logs","entry_date"),getRows("watch_logs","watched_date"),getRows("goals")]);
+      const today=todayISO(); $("dailyCount").textContent=daily.filter(r=>localDateString(r.log_date)===today).length.toLocaleString("bn-BD");
+      const learned=learning.reduce((sum,r)=>sum+(Number(r.minutes)||0),0); $("learningTimeTotal").textContent=formatMinutes(learned);
+      $("incomeTotal").textContent=formatMoney(finance.filter(r=>r.entry_type==="income").reduce((s,r)=>s+(Number(r.amount)||0),0));
+      $("expenseTotal").textContent=formatMoney(finance.filter(r=>r.entry_type==="expense").reduce((s,r)=>s+(Number(r.amount)||0),0));
+      const watchMinutes=watch.reduce((s,r)=>s+(Number(r.duration_minutes)||((Number(r.hours)||0)*60+(Number(r.minutes)||0))),0); $("watchTimeTotal").textContent=formatMinutes(watchMinutes);
+      const done=goals.filter(g=>g.status==="completed").length, remaining=goals.length-done;
+      $("overviewGoalTotal").textContent=goals.length.toLocaleString("bn-BD"); $("overviewGoalDone").textContent=done.toLocaleString("bn-BD"); $("overviewGoalRemaining").textContent=remaining.toLocaleString("bn-BD");
+      $("overviewMotivation").textContent=remaining===0?(goals.length?"দারুণ! সব লক্ষ্য সম্পন্ন। নতুন লক্ষ্য ঠিক করতে পারো।":"আজ একটি ছোট লক্ষ্য যোগ করো—শুরুটাই সবচেয়ে গুরুত্বপূর্ণ।"):`${done}টি লক্ষ্য সম্পন্ন, আরও ${remaining}টি বাকি। ছোট পদক্ষেপ নাও—তুমি পারবে, ইনশাআল্লাহ।`;
+      await refreshGoals();
+      if($("page-records").classList.contains("active")) await refreshRecords();
     }
 
-    async function refreshDashboard() {
-      if (!currentUser || redirecting) return;
-
-      try {
-        const [daily, learning, finance] = await Promise.all([
-          getRows("daily_logs", "log_date"),
-          getRows("learning_logs", "learning_date"),
-          getRows("finance_logs", "entry_date")
-        ]);
-
-        if (!currentUser || redirecting) return;
-
-        const todayLogs = daily.filter(row => row.log_date === today());
-        const totalMinutes = learning.reduce(
-          (sum, row) => sum + Number(row.minutes || 0), 0
-        );
-        const totalIncome = finance
-          .filter(row => row.entry_type === "income")
-          .reduce((sum, row) => sum + Number(row.amount || 0), 0);
-        const totalExpense = finance
-          .filter(row => row.entry_type === "expense")
-          .reduce((sum, row) => sum + Number(row.amount || 0), 0);
-
-        $("dailyCount").textContent = todayLogs.length.toLocaleString("en-BD");
-        $("learningMinutes").textContent =
-          totalMinutes.toLocaleString("en-BD") + " মিনিট";
-        $("incomeTotal").textContent = money(totalIncome);
-        $("expenseTotal").textContent = money(totalExpense);
-
-        await refreshRecords();
-      } catch (error) {
-        if (!redirecting) formError(error);
-      }
+    function getEffectiveDeadline(goal){return goal.extended_target_date||goal.target_date||null;}
+    function goalNudge(goal){
+      if(goal.status==="completed") return {text:"লক্ষ্য পূরণ হয়েছে—অভিনন্দন! 🎉",kind:"good"};
+      const deadline=getEffectiveDeadline(goal); const left=deadline?dateDiff(todayISO(),deadline):null;
+      if(left!==null&&left<0) return {text:`সময়সীমা ${Math.abs(left)} দিন আগে পেরিয়েছে। নিজেকে দোষ না দিয়ে নতুন তারিখ ঠিক করো বা লক্ষ্যটিকে ছোট ধাপে ভাগ করো।`,kind:"bad"};
+      if(left===0) return {text:"আজই নির্ধারিত দিন। যতটুকু সম্ভব করো; দরকার হলে সময়সীমা বাড়িয়ে নাও।",kind:"warn"};
+      const last=goal.last_progress_date||localDateString(goal.created_at); const inactive=last?Math.max(0,dateDiff(last,todayISO())||0):0;
+      if(inactive===0) return {text:"আজকের অগ্রগতি লিখে রাখো—এভাবেই ধারাবাহিকতা তৈরি হয়।",kind:"good"};
+      if(inactive===1) return {text:"গতকাল থেকে অগ্রগতি লেখা হয়নি। আজ ১০ মিনিট দিয়ে আবার শুরু করো।",kind:"warn"};
+      if(inactive<=3) return {text:`গত ${inactive} দিন অগ্রগতি নেই। কাজটাকে ছোট করো—আজ শুধু প্রথম ধাপটি করো।`,kind:"warn"};
+      return {text:`গত ${inactive} দিন এই লক্ষ্যে অগ্রগতি লেখা হয়নি। নতুন করে শুরু করা যায়—আজ একটি ছোট কাজ বেছে নাও।`,kind:"bad"};
     }
-
-    function recordCard(title, date, details, extra = "") {
-      return `
-        <article class="record">
-          <strong>${escapeHTML(title || "শিরোনাম নেই")}</strong>
-          <small>${escapeHTML(date || "")}</small>
-          <p>${escapeHTML(details || "বিস্তারিত নেই")}</p>
-          ${extra ? `<small>${escapeHTML(extra)}</small>` : ""}
-        </article>`;
+    function goalCardHTML(goal){
+      const done=goal.status==="completed", deadline=getEffectiveDeadline(goal), left=deadline?dateDiff(todayISO(),deadline):null, last=goal.last_progress_date||localDateString(goal.created_at), inactive=last?Math.max(0,dateDiff(last,todayISO())||0):0, nudge=goalNudge(goal);
+      const statusText=done?"সম্পন্ন":goal.status==="paused"?"বিরতিতে":"চলমান";
+      let deadlineText=deadline?(left<0?`সময়সীমা পেরিয়েছে ${Math.abs(left)} দিন`:left===0?"শেষ দিন আজ":`বাকি ${left} দিন`):"সময়সীমা নির্ধারণ করা হয়নি";
+      return `<article class="goal-card" data-goal-id="${escapeHTML(goal.id)}"><div class="section-head"><h3>${escapeHTML(goal.title)}</h3><span class="badge ${done?"good":left!==null&&left<0?"bad":goal.status==="paused"?"warn":""}">${statusText}</span></div>
+        ${goal.description?`<p>${escapeHTML(goal.description)}</p>`:""}<p class="record-meta">লক্ষ্যের তারিখ: ${escapeHTML(deadline?formatDate(deadline):"নির্ধারিত নয়")} · ${escapeHTML(deadlineText)}</p>
+        <p class="record-meta">শেষ অগ্রগতি: ${escapeHTML(last?formatDate(last):"কোনো রেকর্ড নেই")} · ${done?"সম্পন্ন":`শেষ অগ্রগতির পর ${inactive} দিন`}</p>
+        <div class="motivation"><span class="badge ${nudge.kind}">${nudge.kind==="good"?"ভালো":nudge.kind==="warn"?"মনে করিয়ে দিচ্ছি":"মনোযোগ দাও"}</span> ${escapeHTML(nudge.text)}</div>
+        ${!done?`<div class="goal-actions"><button type="button" data-action="progress" data-id="${escapeHTML(goal.id)}">আজ অগ্রগতি লিখি</button><button type="button" class="success" data-action="complete" data-id="${escapeHTML(goal.id)}">✓ সম্পন্ন</button><button type="button" class="secondary" data-action="extend" data-id="${escapeHTML(goal.id)}">তারিখ বাড়াও</button>${goal.status==="paused"?`<button type="button" class="secondary" data-action="resume" data-id="${escapeHTML(goal.id)}">আবার শুরু</button>`:`<button type="button" class="secondary" data-action="pause" data-id="${escapeHTML(goal.id)}">বিরতি</button>`}</div>`:`<div class="goal-actions"><button type="button" class="secondary" data-action="reopen" data-id="${escapeHTML(goal.id)}">আবার চালু করো</button></div>`}</article>`;
     }
-
-    async function refreshRecords() {
-      if (!currentUser || redirecting) return;
-
-      const table = $("recordType").value;
-      const list = $("recordsList");
-      list.innerHTML = '<div class="empty">রেকর্ড লোড হচ্ছে...</div>';
-
-      try {
-        const dateColumns = {
-          daily_logs: "log_date",
-          learning_logs: "learning_date",
-          finance_logs: "entry_date",
-          goals: "created_at",
-          watch_logs: "watched_date"
-        };
-
-        const rows = await getRows(table, dateColumns[table]);
-        if (!currentUser || redirecting) return;
-
-        if (!rows.length) {
-          list.innerHTML = '<div class="empty">এখনো কোনো রেকর্ড নেই।</div>';
-          return;
-        }
-
-        list.innerHTML = rows.map(row => {
-          if (table === "daily_logs") {
-            return recordCard(row.title, row.log_date, row.notes,
-              "মুড: " + (row.mood || "—"));
-          }
-
-          if (table === "learning_logs") {
-            return recordCard(row.subject, row.learning_date, row.notes,
-              Number(row.minutes || 0) + " মিনিট");
-          }
-
-          if (table === "finance_logs") {
-            return recordCard(row.category, row.entry_date, row.notes,
-              (row.entry_type === "income" ? "আয়: " : "ব্যয়: ") + money(row.amount));
-          }
-
-          if (table === "goals") {
-            const status = {
-              active: "চলমান", completed: "সম্পন্ন", paused: "স্থগিত"
-            }[row.status] || row.status;
-            return recordCard(row.title, row.target_date || "তারিখ নির্ধারিত নয়",
-              row.description, "অবস্থা: " + status);
-          }
-
-          return recordCard(row.title, row.watched_date, row.summary,
-            (row.content_type === "series" ? "সিরিজ" : "মুভি") +
-            (row.rating !== null && row.rating !== undefined
-              ? " • রেটিং: " + row.rating + "/10" : ""));
-        }).join("");
-      } catch (error) {
-        if (redirecting) return;
-        console.error(error);
-        list.innerHTML = '<div class="empty">রেকর্ড লোড হয়নি: ' +
-          escapeHTML(error.message || "অজানা সমস্যা") + '</div>';
-      }
+    async function refreshGoals(){
+      const {data,error}=await supabase.from("goals").select("*").eq("user_id",user.id).order("created_at",{ascending:false}); if(error) throw error; allGoals=data||[];
+      const done=allGoals.filter(g=>g.status==="completed").length, remaining=allGoals.length-done;
+      $("goalsTotal").textContent=allGoals.length.toLocaleString("bn-BD"); $("goalsCompleted").textContent=done.toLocaleString("bn-BD"); $("goalsRemaining").textContent=remaining.toLocaleString("bn-BD");
+      const upcoming=allGoals.filter(g=>g.status!=="completed"&&getEffectiveDeadline(g)).map(g=>({left:dateDiff(todayISO(),getEffectiveDeadline(g))})).sort((a,b)=>a.left-b.left)[0];
+      $("goalsDaysLeft").textContent=upcoming?(upcoming.left<0?`${Math.abs(upcoming.left)} দিন পেরিয়েছে`:upcoming.left===0?"আজ":`${upcoming.left} দিন`):"—";
+      $("goalMotivation").textContent=remaining===0?(allGoals.length?"সব লক্ষ্য সম্পন্ন! এই সাফল্য উদ্‌যাপন করো।":"তোমার প্রথম লক্ষ্যটি যোগ করো।"):`${done}টি লক্ষ্য সম্পন্ন, আরও ${remaining}টি বাকি। ধারাবাহিকতা নিখুঁত হওয়ার চেয়ে গুরুত্বপূর্ণ—তুমি পারবে, ইনশাআল্লাহ।`;
+      $("goalsList").innerHTML=allGoals.length?allGoals.map(goalCardHTML).join(""):'<div class="empty">এখনও কোনো লক্ষ্য নেই। উপরে গিয়ে প্রথম লক্ষ্যটি যোগ করো।</div>';
+      const alerts=allGoals.filter(g=>g.status!=="completed"&&g.reminder_enabled!==false).slice(0,5);
+      $("overviewGoalAlerts").innerHTML=alerts.length?alerts.map(g=>{const n=goalNudge(g);return `<div class="record"><h3>${escapeHTML(g.title)}</h3><p>${escapeHTML(n.text)}</p><p class="record-meta">${escapeHTML(getEffectiveDeadline(g)?`সময়সীমা: ${formatDate(getEffectiveDeadline(g))}`:"সময়সীমা নির্ধারণ করো")}</p></div>`;}).join(""):'<div class="empty">এখন কোনো রিমাইন্ডার নেই। নতুন লক্ষ্য যোগ করতে পারো।</div>';
     }
-
-    $("tabs").addEventListener("click", event => {
-      const button = event.target.closest("[data-page]");
-      if (!button || !currentUser || redirecting) return;
-
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.classList.toggle("active", tab === button);
-      });
-      document.querySelectorAll(".page").forEach(page => {
-        page.classList.toggle("hidden", page.id !== "page-" + button.dataset.page);
-      });
-
-      if (button.dataset.page === "records") refreshRecords();
-    });
-
-    $("recordType").addEventListener("change", () => {
-      if (currentUser && !redirecting) refreshRecords();
-    });
-
-    $("refreshBtn").addEventListener("click", () => {
-      if (currentUser && !redirecting) refreshRecords();
-    });
-
-    $("logoutBtn").addEventListener("click", async () => {
-      if (!client || redirecting) return;
-
-      $("logoutBtn").disabled = true;
-      try {
-        const { error } = await client.auth.signOut();
-        if (error) throw error;
-        goToLogin();
-      } catch (error) {
-        formError(error);
-        $("logoutBtn").disabled = false;
+    async function updateGoal(id, values){const {error}=await supabase.from("goals").update(values).eq("id",id).eq("user_id",user.id); if(error) throw error; await refreshDashboard();}
+    async function onGoalAction(action,id){
+      const goal=allGoals.find(g=>String(g.id)===String(id)); if(!goal) throw new Error("লক্ষ্যটি পাওয়া যায়নি।");
+      if(action==="progress"){
+        const note=window.prompt("আজ এই লক্ষ্যে কী কাজ করলে? (খালি রাখলেও সেভ হবে)",""); if(note===null) return;
+        const today=todayISO(); const {error}=await supabase.from("goal_progress").upsert({user_id:user.id,goal_id:goal.id,progress_date:today,note:note.trim()||null},{onConflict:"goal_id,progress_date"}); if(error) throw error;
+        const {error:updateError}=await supabase.from("goals").update({last_progress_date:today}).eq("id",goal.id).eq("user_id",user.id); if(updateError) throw updateError;
+        showNotice("আজকের অগ্রগতি সেভ হয়েছে। এগিয়ে চলো!","ok"); await refreshDashboard(); return;
       }
-    });
-
-    async function start() {
-      setDefaultDates();
-
-      // লাইব্রেরি লোড না হলে সুরক্ষিত পেজে থাকা যাবে না।
-      if (!window.supabase) {
-        goToLogin();
-        return;
+      if(action==="complete"){
+        if(!window.confirm("এই লক্ষ্যটি সম্পন্ন হিসেবে চিহ্নিত করবে?")) return;
+        await updateGoal(goal.id,{status:"completed",completed_at:new Date().toISOString()}); showNotice("অভিনন্দন! একটি লক্ষ্য সম্পন্ন হয়েছে! 🎉","ok"); try{const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx){const ctx=new Ctx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=880;gain.gain.value=.08;osc.start();osc.stop(ctx.currentTime+.18);osc.onended=()=>ctx.close();}}catch(e){console.info("Sound unavailable",e);} return;
       }
-
-      try {
-        client = window.supabase.createClient(
-          SUPABASE_URL,
-          SUPABASE_KEY,
-          {
-            auth: {
-              persistSession: true,
-              autoRefreshToken: true,
-              detectSessionInUrl: true,
-              storageKey: "sb-bskzevsuyzfuycgxnpwb-auth-token"
-            }
-          }
-        );
-
-        // প্রথমে সেশন যাচাই, তারপরেই পেজ ও ডেটা দেখানো।
-        const user = await requireUser();
-        if (!user) return;
-
-        showLoggedIn(user);
-        await refreshDashboard();
-
-        // পরবর্তীতে সাইন আউট বা সেশন হারালে লগইন পেজে পাঠাও।
-        client.auth.onAuthStateChange((event, session) => {
-          if (event === "SIGNED_OUT" || !session?.user) {
-            goToLogin();
-            return;
-          }
-
-          currentUser = session.user;
-          $("userEmail").textContent = session.user.email || "ইমেইল পাওয়া যায়নি";
-        });
-      } catch (error) {
-        console.error(error);
-        goToLogin();
+      if(action==="extend"){
+        const current=getEffectiveDeadline(goal)||todayISO(); const next=window.prompt("নতুন শেষ তারিখ লিখো (YYYY-MM-DD)",current); if(next===null)return; if(!/^\d{4}-\d{2}-\d{2}$/.test(next)||next<todayISO()){throw new Error("আজ বা ভবিষ্যতের সঠিক তারিখ লিখো (YYYY-MM-DD)।");} await updateGoal(goal.id,{extended_target_date:next}); showNotice("নতুন সময়সীমা সেভ হয়েছে।","ok"); return;
       }
+      if(action==="pause"){await updateGoal(goal.id,{status:"paused"});showNotice("লক্ষ্যটি বিরতিতে রাখা হয়েছে।","ok");return;}
+      if(action==="resume"){await updateGoal(goal.id,{status:"active"});showNotice("লক্ষ্যটি আবার চালু হয়েছে।","ok");return;}
+      if(action==="reopen"){if(!window.confirm("এই লক্ষ্যটি আবার চালু করবে?"))return;await updateGoal(goal.id,{status:"active",completed_at:null,last_progress_date:goal.last_progress_date||null});showNotice("লক্ষ্যটি আবার চালু হয়েছে।","ok");}
     }
+    $("goalsList").addEventListener("click",async event=>{const button=event.target.closest("button[data-action]");if(!button)return;button.disabled=true;try{await onGoalAction(button.dataset.action,button.dataset.id);}catch(error){console.error(error);showNotice("লক্ষ্যে পরিবর্তন করা যায়নি: "+(error.message||"অজানা সমস্যা"),"error");}finally{button.disabled=false;}});
 
-    start();
+    function recordHTML(table,row){
+      if(table==="daily_logs") return `<article class="record"><h3>${escapeHTML(row.title||"দৈনিক কাজ")}</h3><p class="record-meta">${escapeHTML(formatDate(row.log_date))} · মুড: ${escapeHTML(row.mood||"—")}</p>${row.notes?`<p>${escapeHTML(row.notes)}</p>`:""}</article>`;
+      if(table==="learning_logs") return `<article class="record"><h3>${escapeHTML(row.subject||"শেখা")}</h3><p class="record-meta">${escapeHTML(formatDate(row.learning_date))} · ${escapeHTML(formatMinutes(row.minutes))}</p>${row.notes?`<p>${escapeHTML(row.notes)}</p>`:""}</article>`;
+      if(table==="finance_logs") return `<article class="record"><h3>${escapeHTML(row.category||"হিসাব")} · ${escapeHTML(formatMoney(row.amount))}</h3><p class="record-meta">${escapeHTML(formatDate(row.entry_date))} · ${row.entry_type==="income"?"আয়":"ব্যয়"}</p>${row.notes?`<p>${escapeHTML(row.notes)}</p>`:""}</article>`;
+      if(table==="goals") return `<article class="record"><h3>${escapeHTML(row.title)}</h3><p class="record-meta">অবস্থা: ${row.status==="completed"?"সম্পন্ন":row.status==="paused"?"বিরতিতে":"চলমান"} · সময়সীমা: ${escapeHTML(formatDate(getEffectiveDeadline(row)))}</p>${row.description?`<p>${escapeHTML(row.description)}</p>`:""}</article>`;
+      if(table==="watch_logs") {const mins=Number(row.duration_minutes)||((Number(row.hours)||0)*60+(Number(row.minutes)||0));return `<article class="record"><h3>${escapeHTML(row.title||"মুভি/সিরিজ")}</h3><p class="record-meta">${row.content_type==="series"?"সিরিজ":"মুভি"} · ${escapeHTML(formatDate(row.watched_date))} · ${escapeHTML(formatMinutes(mins))}${row.rating!==null&&row.rating!==undefined?` · রেটিং ${escapeHTML(row.rating)}/10`:""}</p>${row.episode?`<p>এপিসোড: ${escapeHTML(row.episode)}</p>`:""}${row.summary?`<p>${escapeHTML(row.summary)}</p>`:""}</article>`;}
+      return "";
+    }
+    async function refreshRecords(){const table=$("recordType").value;const dateColumn={daily_logs:"log_date",learning_logs:"learning_date",finance_logs:"entry_date",goals:null,watch_logs:"watched_date"}[table];const rows=await getRows(table,dateColumn);$("recordsList").innerHTML=rows.length?rows.map(row=>recordHTML(table,row)).join(""):'<div class="empty">এই ক্যাটাগরিতে কোনো রেকর্ড নেই।</div>';}
+
+    document.querySelectorAll(".tabs button[data-page]").forEach(button=>button.addEventListener("click",()=>switchPage(button.dataset.page)));
+    $("recordType").addEventListener("change",()=>refreshRecords().catch(e=>showNotice("রেকর্ড লোড হয়নি: "+e.message,"error")));
+    $("refreshBtn").addEventListener("click",()=>refreshDashboard().then(()=>showNotice("ড্যাশবোর্ড আপডেট হয়েছে।","ok")).catch(e=>showNotice("ড্যাশবোর্ড লোড হয়নি: "+e.message,"error")));
+    $("recordsRefreshBtn").addEventListener("click",()=>refreshRecords().catch(e=>showNotice("রেকর্ড লোড হয়নি: "+e.message,"error")));
+    $("logoutBtn").addEventListener("click",async()=>{const {error}=await supabase.auth.signOut();if(error){showNotice("লগআউট করা যায়নি: "+error.message,"error");return;}location.replace("/");});
+
+    async function init(){
+      if(!window.supabase){showNotice("Supabase লাইব্রেরি লোড হয়নি। ইন্টারনেট সংযোগ পরীক্ষা করো।","error");return;}
+      const {data,error}=await supabase.auth.getSession();
+      if(error||!data.session){location.replace("/");return;}
+      user=data.session.user; document.body.classList.add("authenticated"); setDefaultDates();
+      try{await refreshDashboard();}catch(err){console.error(err);showNotice("ড্যাশবোর্ড লোড করতে সমস্যা: "+(err.message||"অজানা সমস্যা"),"error");}
+      supabase.auth.onAuthStateChange((event,session)=>{if(event==="SIGNED_OUT"||!session){location.replace("/");}});
+    }
+    init().catch(error=>{console.error(error);location.replace("/");});
+  })();
   </script>
 </body>
-                                                          </html>
+  </html>
