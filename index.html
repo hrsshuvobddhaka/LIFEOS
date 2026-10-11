@@ -119,8 +119,11 @@
     if (!configured) {
       showMessage("প্রথমে কোডের SUPABASE_URL ও SUPABASE_KEY বসাও।");
     } else {
-      supabaseClient = window.supabase.createClient(
-        SUPABASE_URL, SUPABASE_KEY
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    window.location.replace("/dashboard.html");
+  }
+});
       );
 
       supabaseClient.auth.onAuthStateChange((event, session) => {
