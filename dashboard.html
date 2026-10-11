@@ -162,6 +162,7 @@ async function start() {
   const { data, error } = await client.auth.getSession();
   if (error) throw error;
 
+  console.log("LIFEOS session:", data.session);
   currentUser = data.session?.user;
   if (!currentUser) {
     message("লগইন করা নেই। প্রথমে লগইন পেজে যাও।");
