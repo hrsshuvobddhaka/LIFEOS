@@ -5,44 +5,93 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#101827">
   <title>LIFEOS — Your Life, Your Potential</title>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     * { box-sizing: border-box; }
+
     body {
-      margin: 0; min-height: 100vh;
+      margin: 0;
+      min-height: 100vh;
       font-family: system-ui, sans-serif;
       color: #f5f7fb;
-      background: linear-gradient(145deg,#101827,#182d43);
-      display: grid; place-items: center; padding: 20px;
+      background: linear-gradient(145deg, #101827, #182d43);
+      display: grid;
+      place-items: center;
+      padding: 20px;
     }
+
     .card {
-      width: 100%; max-width: 410px;
-      padding: 28px; border-radius: 22px;
+      width: 100%;
+      max-width: 410px;
+      padding: 28px;
+      border-radius: 22px;
       background: #ffffff0c;
       border: 1px solid #ffffff20;
       box-shadow: 0 20px 60px #0003;
     }
-    .logo { font-size: 30px; font-weight: 800; letter-spacing: 2px; }
+
+    .logo {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
     .accent { color: #6ee7b7; }
-    .muted { color: #b9c5d4; line-height: 1.6; }
-    label { display: block; margin: 14px 0 7px; }
+
+    .muted {
+      color: #b9c5d4;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 7px;
+    }
+
     input {
-      width: 100%; padding: 13px; border-radius: 10px;
-      border: 1px solid #ffffff30; background: #101827;
-      color: white; font-size: 16px;
+      width: 100%;
+      padding: 13px;
+      border-radius: 10px;
+      border: 1px solid #ffffff30;
+      background: #101827;
+      color: white;
+      font-size: 16px;
     }
+
     button {
-      width: 100%; padding: 13px; margin-top: 14px;
-      border: 0; border-radius: 10px;
-      font-size: 16px; font-weight: 700; cursor: pointer;
+      width: 100%;
+      padding: 13px;
+      margin-top: 14px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
     }
-    .primary { background: #6ee7b7; color: #10251f; }
-    .secondary { background: #ffffff15; color: white; }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .primary {
+      background: #6ee7b7;
+      color: #10251f;
+    }
+
+    .secondary {
+      background: #ffffff15;
+      color: white;
+    }
+
     #message { overflow-wrap: anywhere; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
     .welcome { text-align: center; }
   </style>
 </head>
+
 <body>
   <main class="card">
     <div class="logo">LIFE<span class="accent">OS</span></div>
@@ -54,13 +103,23 @@
 
       <form id="authForm">
         <label for="email">ইমেইল</label>
-        <input id="email" type="email" autocomplete="email"
-               placeholder="তোমার ইমেইল" required>
+        <input
+          id="email"
+          type="email"
+          autocomplete="email"
+          placeholder="তোমার ইমেইল"
+          required
+        >
 
         <label for="password">পাসওয়ার্ড</label>
-        <input id="password" type="password"
-               autocomplete="current-password"
-               placeholder="কমপক্ষে ৬ অক্ষর" minlength="6" required>
+        <input
+          id="password"
+          type="password"
+          autocomplete="current-password"
+          placeholder="কমপক্ষে ৬ অক্ষর"
+          minlength="6"
+          required
+        >
 
         <button class="primary" id="submitBtn" type="submit">
           লগইন
@@ -70,75 +129,124 @@
       <button class="secondary" id="toggleBtn" type="button">
         নতুন অ্যাকাউন্ট তৈরি করো
       </button>
-      <p id="message" class="muted" role="status"></p>
+
+      <p id="message" class="muted" role="status" aria-live="polite"></p>
     </section>
 
     <section id="dashboard" class="hidden welcome">
       <h2>স্বাগতম, <span class="accent">LIFEOS</span>!</h2>
       <p class="muted">তুমি সফলভাবে লগইন করেছ।</p>
       <p id="userEmail"></p>
-      <p class="muted">এটি তোমার ব্যক্তিগত ড্যাশবোর্ডের প্রথম সংস্করণ।</p>
-      <button id="logoutBtn" class="primary">লগআউট</button>
+      <p class="muted">তোমার ড্যাশবোর্ড খুলছে...</p>
+      <button id="logoutBtn" class="primary" type="button">
+        লগআউট
+      </button>
     </section>
   </main>
 
   <script>
-    // Replace these two values with your own Supabase details.
-    const SUPABASE_URL = "https://bskzevsuyzfuycgxnpwb.supabase.co";
-    const SUPABASE_KEY = "sb_publishable_jUL2Ls1DBRvuFiQ26wMXqQ_CmNsMlXm";
+    const SUPABASE_URL =
+      "https://bskzevsuyzfuycgxnpwb.supabase.co";
 
-    const configured =
-      SUPABASE_URL.startsWith("https://") &&
-      SUPABASE_KEY.startsWith("sb_publishable_");
+    const SUPABASE_KEY =
+      "sb_publishable_jUL2Ls1DBRvuFiQ26wMXqQ_CmNsMlXm";
 
-    let supabaseClient = null;
-    let signupMode = false;
+    const DASHBOARD_URL = "/dashboard.html";
 
     const authSection = document.getElementById("auth");
-    const dashboard = document.getElementById("dashboard");
+    const dashboardSection = document.getElementById("dashboard");
     const message = document.getElementById("message");
     const form = document.getElementById("authForm");
     const submitBtn = document.getElementById("submitBtn");
     const toggleBtn = document.getElementById("toggleBtn");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+    let supabaseClient = null;
+    let signupMode = false;
+    let redirecting = false;
 
     function showMessage(text) {
       message.textContent = text;
     }
 
-    function showDashboard(user) {
-      authSection.classList.add("hidden");
-      dashboard.classList.remove("hidden");
-      document.getElementById("userEmail").textContent = user.email;
-    }
-
     function showAuth() {
-      dashboard.classList.add("hidden");
+      dashboardSection.classList.add("hidden");
       authSection.classList.remove("hidden");
     }
 
-    if (!configured) {
-      showMessage("প্রথমে কোডের SUPABASE_URL ও SUPABASE_KEY বসাও।");
-    } else {
-      
-      );
+    function goToDashboard(user) {
+      if (!user || redirecting) return;
 
-      supabaseClient.auth.onAuthStateChange((event, session) => {
-        if (session?.user) {
-          showDashboard(session.user);
-        } else {
-          showAuth();
+      redirecting = true;
+      document.getElementById("userEmail").textContent =
+        user.email || "";
+
+      authSection.classList.add("hidden");
+      dashboardSection.classList.remove("hidden");
+
+      // লগইন সম্পন্ন হলে সরাসরি ড্যাশবোর্ডে যাবে
+      window.location.replace(DASHBOARD_URL);
+    }
+
+    async function init() {
+      if (
+        !window.supabase ||
+        !SUPABASE_URL.startsWith("https://") ||
+        !SUPABASE_KEY.startsWith("sb_publishable_")
+      ) {
+        showMessage("Supabase সংযোগ পাওয়া যায়নি। পেজ রিফ্রেশ করে দেখো।");
+        return;
+      }
+
+      try {
+        supabaseClient = window.supabase.createClient(
+          SUPABASE_URL,
+          SUPABASE_KEY,
+          {
+            auth: {
+              persistSession: true,
+              autoRefreshToken: true,
+              detectSessionInUrl: true,
+              storageKey: "sb-bskzevsuyzfuycgxnpwb-auth-token"
+            }
+          }
+        );
+
+        // আগে থেকেই লগইন করা থাকলে সরাসরি ড্যাশবোর্ডে যাও
+        const { data, error } =
+          await supabaseClient.auth.getSession();
+
+        if (error) throw error;
+
+        if (data.session && data.session.user) {
+          goToDashboard(data.session.user);
+          return;
         }
-      });
+
+        showAuth();
+      } catch (error) {
+        showMessage("সংযোগের সমস্যা: " + error.message);
+      }
     }
 
     toggleBtn.addEventListener("click", () => {
       signupMode = !signupMode;
+
       document.getElementById("heading").textContent =
-        signupMode ? "নতুন অ্যাকাউন্ট তৈরি করো" : "তোমার যাত্রা শুরু করো";
-      submitBtn.textContent = signupMode ? "রেজিস্ট্রেশন" : "লগইন";
+        signupMode
+          ? "নতুন অ্যাকাউন্ট তৈরি করো"
+          : "তোমার যাত্রা শুরু করো";
+
+      submitBtn.textContent =
+        signupMode ? "রেজিস্ট্রেশন" : "লগইন";
+
+      document.getElementById("password").autocomplete =
+        signupMode ? "new-password" : "current-password";
+
       toggleBtn.textContent = signupMode
         ? "আগে থেকেই অ্যাকাউন্ট আছে? লগইন"
         : "নতুন অ্যাকাউন্ট তৈরি করো";
+
       showMessage("");
     });
 
@@ -146,42 +254,83 @@
       event.preventDefault();
 
       if (!supabaseClient) {
-        showMessage("Supabase URL ও Publishable Key সঠিকভাবে বসাও।");
+        showMessage("Supabase সংযোগ তৈরি হয়নি। পেজ রিফ্রেশ করো।");
         return;
       }
 
       submitBtn.disabled = true;
+      toggleBtn.disabled = true;
       showMessage("অপেক্ষা করো...");
 
       try {
-        const email = document.getElementById("email").value.trim();
-        const password = document.getElementById("password").value;
+        const email =
+          document.getElementById("email").value.trim();
 
-        const result = signupMode
-          ? await supabaseClient.auth.signUp({ email, password })
-          : await supabaseClient.auth.signInWithPassword({ email, password });
+        const password =
+          document.getElementById("password").value;
+
+        let result;
+
+        if (signupMode) {
+          result = await supabaseClient.auth.signUp({
+            email,
+            password
+          });
+        } else {
+          result = await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+        }
 
         if (result.error) throw result.error;
 
-        if (signupMode && !result.data.session) {
-          showMessage("অ্যাকাউন্ট তৈরি হয়েছে। ইমেইলে নিশ্চিতকরণ লিংক এলে সেটিতে চাপ দাও।");
-        } else if (result.data.user) {
-          showDashboard(result.data.user);
-          showMessage("");
+        if (signupMode) {
+          if (result.data.session && result.data.user) {
+            goToDashboard(result.data.user);
+          } else {
+            showMessage(
+              "অ্যাকাউন্ট তৈরি হয়েছে। ইমেইলে নিশ্চিতকরণ লিংক এলে সেটিতে চাপ দিয়ে তারপর লগইন করো।"
+            );
+          }
+        } else {
+          if (result.data.session && result.data.user) {
+            goToDashboard(result.data.user);
+          } else {
+            showMessage(
+              "লগইন সম্পন্ন হয়নি। আবার চেষ্টা করো।"
+            );
+          }
         }
       } catch (error) {
         showMessage("সমস্যা: " + error.message);
       } finally {
         submitBtn.disabled = false;
+        toggleBtn.disabled = false;
       }
     });
 
-    document.getElementById("logoutBtn").addEventListener("click", async () => {
+    logoutBtn.addEventListener("click", async () => {
       if (!supabaseClient) return;
-      const { error } = await supabaseClient.auth.signOut();
-      showMessage(error ? error.message : "লগআউট হয়েছে।");
-      showAuth();
+
+      logoutBtn.disabled = true;
+      showMessage("লগআউট হচ্ছে...");
+
+      try {
+        const { error } =
+          await supabaseClient.auth.signOut();
+
+        if (error) throw error;
+
+        redirecting = false;
+        window.location.replace("/");
+      } catch (error) {
+        showMessage("লগআউট সমস্যা: " + error.message);
+        logoutBtn.disabled = false;
+      }
     });
+
+    init();
   </script>
 </body>
 </html>
