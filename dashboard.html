@@ -8,7 +8,12 @@
   <style>
     :root{color-scheme:dark;--bg:#0b1220;--panel:#121c2e;--panel2:#17243a;--text:#edf3ff;--muted:#9eacc4;--line:#2a3a55;--accent:#7c9cff;--good:#5ee0a0;--warn:#ffc76a;--bad:#ff8585}
     *{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#14213b 0%,var(--bg) 55%)}
-    #app{display:none;max-width:1100px;margin:auto;padding:18px 14px 40px}body.authenticated #app{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-size:1.5rem;font-weight:850;letter-spacing:.3px}.brand span{color:var(--accent)}.sub{color:var(--muted);font-size:.92rem;margin-top:3px}.panel{background:rgba(18,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px #0002}.panel h2,.panel h3{margin:0 0 12px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(8px)}button, input,select,textarea{font:inherit}button{border:0;border-radius:11px;padding:10px 13px;background:var(--accent);color:#071022;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.tabs button{white-space:nowrap;background:var(--panel2);color:var(--text);border:1px solid var(--line)}.tabs button.active{background:var(--accent);color:#071022;border-color:var(--accent)}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.danger{background:#4a202b;color:#ffdfe2}.success{background:#164533;color:#d7ffea}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:13px;min-width:0}.stat .label{font-size:.85rem;color:var(--muted)}.stat .value{font-size:1.45rem;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:.92rem;color:#d5e0f4}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#0b1424;color:var(--text);padding:11px;border-radius:10px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}.field textarea{min-height:84px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.notice{display:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0;white-space:pre-wrap}.notice.show{display:block}.notice.error{border-color:#a64755;background:#361b26;color:#ffdfe2}.notice.ok{border-color:#277a59;background:#123528;color:#d7ffea}.record-list,.goal-list{display:grid;gap:10px}.record,.goal-card{border:1px solid var(--line);background:#0d1728;border-radius:14px;padding:13px;min-width:0}.record h3,.goal-card h3{margin:0 0 5px;font-size:1.03rem;overflow-wrap:anywhere}.record p,.goal-card p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}.record-meta{color:var(--muted);font-size:.86rem}.badge{display:inline-block;border-radius:999px;padding:4px 9px;background:#263754;color:#dce8ff;font-size:.8rem;margin:2px 4px 2px 0}.badge.good{background:#164533;color:#d7ffea}.badge.warn{background:#4a371c;color:#ffe7b5}.badge.bad{background:#4a202b;color:#ffdfe2}.goal-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.motivation{line-height:1.65;border-left:3px solid var(--accent);padding:10px 12px;background:#101e33;border-radius:0 10px 10px 0;margin-top:12px}.checkline{display:flex;align-items:center;gap:9px}.checkline input{width:18px;height:18px;accent-color:var(--accent)}.empty{border:1px dashed var(--line);padding:18px;border-radius:12px;color:var(--muted);text-align:center}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.small{font-size:.84rem}.hidden{display:none!important}.modal-backdrop{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.modal-backdrop.open{display:flex}.modal-card{width:min(100%,520px);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}.modal-card h2{margin:0 0 8px}.modal-card textarea{width:100%;min-height:130px;background:#0b1424;color:var(--text);border:1px solid var(--line);padding:12px;border-radius:10px;font:inherit}.modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}
+    #app{display:none;max-width:1100px;margin:auto;padding:18px 14px 40px}body.authenticated #app{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-size:1.5rem;font-weight:850;letter-spacing:.3px}.brand span{color:var(--accent)}.sub{color:var(--muted);font-size:.92rem;margin-top:3px}.panel{background:rgba(18,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px #0002}.panel h2,.panel h3{margin:0 0 12px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(8px)}button, input,select,textarea{font:inherit}button{border:0;border-radius:11px;padding:10px 13px;background:var(--accent);color:#071022;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.tabs button{white-space:nowrap;background:var(--panel2);color:var(--text);border:1px solid var(--line)}.tabs button.active{background:var(--accent);color:#071022;border-color:var(--accent)}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.danger{background:#4a202b;color:#ffdfe2}.success{background:#164533;color:#d7ffea}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:13px;min-width:0}.stat .label{font-size:.85rem;color:var(--muted)}.stat .value{font-size:1.45rem;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:.92rem;color:#d5e0f4}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#0b1424;color:var(--text);padding:11px;border-radius:10px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}.field textarea{min-height:84px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.notice{display:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0;white-space:pre-wrap}.notice.show{display:block}.notice.error{border-color:#a64755;background:#361b26;color:#ffdfe2}.notice.ok{border-color:#277a59;background:#123528;color:#d7ffea}.record-list,.goal-list{display:grid;gap:10px}.record,.goal-card{border:1px solid var(--line);background:#0d1728;border-radius:14px;padding:13px;min-width:0}.record h3,.goal-card h3{margin:0 0 5px;font-size:1.03rem;overflow-wrap:anywhere}.record p,.goal-card p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}.record-meta{color:var(--muted);font-size:.86rem}.badge{display:inline-block;border-radius:999px;padding:4px 9px;background:#263754;color:#dce8ff;font-size:.8rem;margin:2px 4px 2px 0}.badge.good{background:#164533;color:#d7ffea}.badge.warn{background:#4a371c;color:#ffe7b5}.badge.bad{background:#4a202b;color:#ffdfe2}.goal-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.motivation{line-height:1.65;border-left:3px solid var(--accent);padding:10px 12px;background:#101e33;border-radius:0 10px 10px 0;margin-top:12px}.checkline{display:flex;align-items:center;gap:9px}.checkline input{width:18px;height:18px;accent-color:var(--accent)}.empty{border:1px dashed var(--line);padding:18px;border-radius:12px;color:var(--muted);text-align:center}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.small{font-size:.84rem}.hidden{display:none!important}.modal-backdrop{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.modal-backdrop.open{display:flex}.modal-card{width:min(100%,520px);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}.modal-card h2{margin:0 0 8px}.modal-card textarea{width:100%;min-height:130px;background:#0b1424;color:var(--text);border:1px solid var(--line);padding:12px;border-radius:10px;font:inherit}.modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:16px}
+    .modal-backdrop{backdrop-filter:blur(7px);background:rgba(2,7,17,.78)}
+    .modal-card{position:relative;max-height:calc(100dvh - 32px);overflow:auto;padding:22px;background:linear-gradient(155deg,#182944 0%,#101a2b 72%);border-color:#354966;box-shadow:0 24px 80px #0009,0 0 0 1px #ffffff08;animation:modalIn .18s ease-out}
+    .modal-card h2{font-size:1.25rem;line-height:1.35}.modal-intro{color:var(--muted);line-height:1.65;margin:8px 0 16px}.modal-symbol{width:48px;height:48px;display:grid;place-items:center;border-radius:15px;background:#273b5c;color:#cfe0ff;font-size:1.5rem;margin-bottom:14px}.modal-symbol.complete{background:#164533;color:#a6ffd0}.modal-symbol.deadline{background:#49371d;color:#ffe1a0}.modal-card .field input{width:100%;border:1px solid #3b5273;background:#0a1424;color:var(--text);padding:12px;border-radius:11px;font:inherit;min-height:46px}.modal-card .field input:focus,.modal-card textarea:focus{outline:2px solid #7c9cff55;border-color:var(--accent)}.modal-actions button{min-width:112px}.modal-actions .primary-action{background:linear-gradient(135deg,#9ab1ff,#6f91ff);color:#071022}.modal-actions .complete-action{background:linear-gradient(135deg,#5ee0a0,#2bbd7d);color:#052617}
+    @keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+    @media(max-width:480px){.modal-card{padding:18px;border-radius:17px}.modal-actions{display:grid;grid-template-columns:1fr 1fr}.modal-actions button{width:100%;min-width:0}}
     @media(max-width:680px){#app{padding:13px 10px 30px}.grid,.form-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:13px}.brand{font-size:1.3rem}.tabs{margin:0 -10px;padding-left:10px;padding-right:10px}}
   </style>
 </head>
@@ -26,6 +31,17 @@
         <form id="progressForm">
           <div class="field"><label for="progressNote">আজ এই লক্ষ্যে কী কাজ করলে?</label><textarea id="progressNote" maxlength="2000" placeholder="যেমন: ৩০ মিনিট ইংরেজি পড়েছি..."></textarea></div>
           <div class="modal-actions"><button type="button" id="cancelProgressBtn" class="secondary">বাতিল</button><button type="submit" id="saveProgressBtn">অগ্রগতি সেভ</button></div>
+        </form>
+      </div>
+    </div>
+    <div id="goalActionModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="goalActionTitle" aria-hidden="true">
+      <div class="modal-card">
+        <div id="goalActionSymbol" class="modal-symbol" aria-hidden="true">✓</div>
+        <h2 id="goalActionTitle">লক্ষ্য আপডেট</h2>
+        <p id="goalActionMessage" class="modal-intro"></p>
+        <form id="goalActionForm">
+          <div id="goalActionDateField" class="field hidden"><label for="goalActionDate">নতুন শেষ তারিখ</label><input id="goalActionDate" type="date"></div>
+          <div class="modal-actions"><button type="button" id="goalActionCancel" class="secondary">বাতিল</button><button type="submit" id="goalActionConfirm" class="primary-action">নিশ্চিত করো</button></div>
         </form>
       </div>
     </div>
@@ -236,6 +252,35 @@
       const alerts=allGoals.filter(g=>g.status!=="completed"&&g.reminder_enabled!==false).slice(0,5);
       $("overviewGoalAlerts").innerHTML=alerts.length?alerts.map(g=>{const n=goalNudge(g);return `<div class="record"><h3>${escapeHTML(g.title)}</h3><p>${escapeHTML(n.text)}</p><p class="record-meta">${escapeHTML(getEffectiveDeadline(g)?`সময়সীমা: ${formatDate(getEffectiveDeadline(g))}`:"সময়সীমা নির্ধারণ করো")}</p></div>`;}).join(""):'<div class="empty">এখন কোনো রিমাইন্ডার নেই। নতুন লক্ষ্য যোগ করতে পারো।</div>';
     }
+    let goalActionResolver = null;
+    function closeGoalActionModal(result=null){
+      const modal=$("goalActionModal"); modal.classList.remove("open"); modal.setAttribute("aria-hidden","true");
+      if(goalActionResolver){const resolve=goalActionResolver;goalActionResolver=null;resolve(result);}
+    }
+    function showGoalActionModal(options={}){
+      const modal=$("goalActionModal"), symbol=$("goalActionSymbol"), dateField=$("goalActionDateField"), dateInput=$("goalActionDate");
+      $("goalActionTitle").textContent=options.title||"লক্ষ্য আপডেট";
+      $("goalActionMessage").textContent=options.message||"তুমি কি এই পরিবর্তনটি করতে চাও?";
+      $("goalActionConfirm").textContent=options.confirmText||"নিশ্চিত করো";
+      symbol.textContent=options.symbol||"✓"; symbol.className="modal-symbol"+(options.type==="complete"?" complete":options.type==="date"?" deadline":"");
+      dateField.classList.toggle("hidden",options.type!=="date"); dateInput.value=options.date||todayISO(); dateInput.min=todayISO();
+      $("goalActionForm").dataset.mode=options.type||"confirm";
+      modal.classList.add("open"); modal.setAttribute("aria-hidden","false");
+      setTimeout(()=>{if(options.type==="date")dateInput.focus();else $("goalActionConfirm").focus();},40);
+      return new Promise(resolve=>{goalActionResolver=resolve;});
+    }
+    $("goalActionCancel").addEventListener("click",()=>closeGoalActionModal(null));
+    $("goalActionModal").addEventListener("click",event=>{if(event.target===$("goalActionModal"))closeGoalActionModal(null);});
+    $("goalActionForm").addEventListener("submit",event=>{
+      event.preventDefault(); const mode=$("goalActionForm").dataset.mode;
+      if(mode==="date"){
+        const value=$("goalActionDate").value;
+        if(!value||value<todayISO()){showNotice("আজ বা ভবিষ্যতের তারিখ বেছে নাও।","error");return;}
+        closeGoalActionModal(value);
+      }else closeGoalActionModal(true);
+    });
+    document.addEventListener("keydown",event=>{if(event.key==="Escape"&&$("goalActionModal").classList.contains("open"))closeGoalActionModal(null);});
+
     async function updateGoal(id, values){const {error}=await supabase.from("goals").update(values).eq("id",id).eq("user_id",user.id); if(error) throw error; await refreshDashboard();}
     async function onGoalAction(action,id){
       const goal=allGoals.find(g=>String(g.id)===String(id)); if(!goal) throw new Error("লক্ষ্যটি পাওয়া যায়নি।");
@@ -248,15 +293,19 @@
         return;
       }
       if(action==="complete"){
-        if(!window.confirm("এই লক্ষ্যটি সম্পন্ন হিসেবে চিহ্নিত করবে?")) return;
+        const confirmed=await showGoalActionModal({type:"complete",title:"লক্ষ্য পূরণ হয়েছে?",message:`“${goal.title}” লক্ষ্যটি সম্পন্ন হিসেবে চিহ্নিত করা হবে। তুমি কি নিশ্চিত?`,confirmText:"হ্যাঁ, সম্পন্ন",symbol:"✓"});
+        if(!confirmed) return;
         await updateGoal(goal.id,{status:"completed",completed_at:new Date().toISOString()}); showNotice("অভিনন্দন! একটি লক্ষ্য সম্পন্ন হয়েছে! 🎉","ok"); try{const Ctx=window.AudioContext||window.webkitAudioContext;if(Ctx){const ctx=new Ctx(),osc=ctx.createOscillator(),gain=ctx.createGain();osc.connect(gain);gain.connect(ctx.destination);osc.frequency.value=880;gain.gain.value=.08;osc.start();osc.stop(ctx.currentTime+.18);osc.onended=()=>ctx.close();}}catch(e){console.info("Sound unavailable",e);} return;
       }
       if(action==="extend"){
-        const current=getEffectiveDeadline(goal)||todayISO(); const next=window.prompt("নতুন শেষ তারিখ লিখো (YYYY-MM-DD)",current); if(next===null)return; if(!/^\d{4}-\d{2}-\d{2}$/.test(next)||next<todayISO()){throw new Error("আজ বা ভবিষ্যতের সঠিক তারিখ লিখো (YYYY-MM-DD)।");} await updateGoal(goal.id,{extended_target_date:next}); showNotice("নতুন সময়সীমা সেভ হয়েছে।","ok"); return;
+        const current=getEffectiveDeadline(goal)||todayISO(); const next=await showGoalActionModal({type:"date",title:"লক্ষ্যের সময় বাড়াও",message:`“${goal.title}” লক্ষ্যটি শেষ করার জন্য নতুন একটি বাস্তবসম্মত তারিখ বেছে নাও।`,confirmText:"তারিখ সেভ করো",symbol:"📅",date:current});
+        if(next===null)return;
+        if(!next||!/^\d{4}-\d{2}-\d{2}$/.test(next)||next<todayISO()){throw new Error("আজ বা ভবিষ্যতের সঠিক তারিখ বেছে নাও।");}
+        await updateGoal(goal.id,{extended_target_date:next}); showNotice("নতুন সময়সীমা সেভ হয়েছে।","ok"); return;
       }
       if(action==="pause"){await updateGoal(goal.id,{status:"paused"});showNotice("লক্ষ্যটি বিরতিতে রাখা হয়েছে।","ok");return;}
       if(action==="resume"){await updateGoal(goal.id,{status:"active"});showNotice("লক্ষ্যটি আবার চালু হয়েছে।","ok");return;}
-      if(action==="reopen"){if(!window.confirm("এই লক্ষ্যটি আবার চালু করবে?"))return;await updateGoal(goal.id,{status:"active",completed_at:null,last_progress_date:goal.last_progress_date||null});showNotice("লক্ষ্যটি আবার চালু হয়েছে।","ok");}
+      if(action==="reopen"){const confirmed=await showGoalActionModal({type:"confirm",title:"লক্ষ্য আবার শুরু করবে?",message:`“${goal.title}” লক্ষ্যটি আবার চলমান তালিকায় ফিরবে।`,confirmText:"আবার শুরু করো",symbol:"↻"});if(!confirmed)return;await updateGoal(goal.id,{status:"active",completed_at:null,last_progress_date:goal.last_progress_date||null});showNotice("লক্ষ্যটি আবার চালু হয়েছে।","ok");}
     }
     $("goalsList").addEventListener("click",async event=>{const button=event.target.closest("button[data-action]");if(!button)return;button.disabled=true;try{await onGoalAction(button.dataset.action,button.dataset.id);}catch(error){console.error(error);showNotice("লক্ষ্যে পরিবর্তন করা যায়নি: "+(error.message||"অজানা সমস্যা"),"error");}finally{button.disabled=false;}});
     function closeProgressModal(){ $("progressModal").classList.remove("open"); activeProgressGoalId=null; }
@@ -310,4 +359,4 @@
   })();
   </script>
 </body>
-</html>
+                                                                                                                             </html>
