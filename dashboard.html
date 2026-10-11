@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101827">
+  <title>LIFEOS — Personal Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#101827;color:#eef2ff;font-family:Arial,sans-serif}
+    header{padding:22px 16px;background:#172337;border-bottom:1px solid #304056}
+    h1{margin:0;font-size:26px}
+    header p{color:#aab9ce;margin:8px 0 0}
+    main{max-width:850px;margin:auto;padding:16px}
+    .muted{color:#aab9ce;font-size:14px}
+    .cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:18px 0}
+    .card,form,.panel{background:#19263a;border:1px solid #304056;border-radius:14px;padding:16px}
+    .card strong{display:block;font-size:25px;margin-top:10px}
+    nav{display:flex;gap:8px;overflow-x:auto;margin:16px 0}
+    button{border:0;border-radius:9px;padding:12px 14px;background:#2d405b;color:white;font-weight:600;cursor:pointer}
+    nav button{white-space:nowrap}
+    nav button.active,.primary{background:#5b70ed}
+    input,select,textarea{width:100%;padding:12px;margin:7px 0 14px;border:1px solid #42516a;border-radius:9px;background:#101827;color:white;font-size:16px}
+    label{font-size:14px;color:#d5deee}
+    h2{font-size:20px;margin-top:0}
+    .hidden{display:none}
+    .message{padding:12px;border-radius:9px;margin:12px 0;background:#26364d}
+    .entry{border-bottom:1px solid #304056;padding:12px 0;overflow-wrap:anywhere}
+    .entry:last-child{border-bottom:0}
+    .danger{background:#6d3540}
+    footer{text-align:center;padding:25px;color:#aab9ce;font-size:13px}
+    @media(min-width:600px){.cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  </style>
+</head>
+<body>
+<header>
+  <h1>LIFEOS</h1>
+  <p>Make every day count. Build a better you.</p>
+  <p id="userEmail" class="muted">তোমার ব্যক্তিগত জীবন ব্যবস্থাপনা</p>
+</header>
+
+<main>
+  <div id="message" class="message">ডেটাবেসের সঙ্গে সংযোগ হচ্ছে...</div>
+
+  <section class="cards">
+    <div class="card"><span class="muted">আজকের জার্নাল</span><strong id="journalCount">—</strong></div>
+    <div class="card"><span class="muted">শেখার সময় (মিনিট)</span><strong id="learningCount">—</strong></div>
+    <div class="card"><span class="muted">মোট আয়</span><strong id="incomeCount">—</strong></div>
+    <div class="card"><span class="muted">সক্রিয় লক্ষ্য</span><strong id="goalCount">—</strong></div>
+  </section>
+
+  <nav>
+    <button class="active" data-tab="daily">Daily Journal</button>
+    <button data-tab="learning">Learning</button>
+    <button data-tab="finance">Finance</button>
+    <button data-tab="goals">Goals</button>
+    <button data-tab="records">My Records</button>
+  </nav>
+
+  <section id="daily" class="panel">
+    <h2>📝 Daily Journal</h2>
+    <form id="dailyForm">
+      <label>তারিখ</label>
+      <input name="date" type="date" required>
+      <label>আজকের শিরোনাম</label>
+      <input name="title" maxlength="150" placeholder="আজ কী করলে?" required>
+      <label>মুড</label>
+      <select name="mood">
+        <option value="ভালো">ভালো</option>
+        <option value="মোটামুটি">মোটামুটি</option>
+        <option value="খারাপ">খারাপ</option>
+        <option value="চিন্তিত">চিন্তিত</option>
+      </select>
+      <label>আজকের বিস্তারিত</label>
+      <textarea name="notes" rows="4" placeholder="তোমার দিনের অভিজ্ঞতা..."></textarea>
+      <button class="primary" type="submit">জার্নাল সংরক্ষণ</button>
+    </form>
+  </section>
+
+  <section id="learning" class="panel hidden">
+    <h2>📚 Learning Tracker</h2>
+    <form id="learningForm">
+      <label>তারিখ</label><input name="date" type="date" required>
+      <label>কী শিখেছ?</label><input name="subject" maxlength="150" required placeholder="যেমন: ইংরেজি">
+      <label>কত মিনিট শিখেছ?</label><input name="minutes" type="number" min="0" step="1" required>
+      <label>নোট</label><textarea name="notes" rows="3"></textarea>
+      <button class="primary" type="submit">শেখার তথ্য সংরক্ষণ</button>
+    </form>
+  </section>
+
+  <section id="finance" class="panel hidden">
+    <h2>💰 Finance Tracker</h2>
+    <form id="financeForm">
+      <label>তারিখ</label><input name="date" type="date" required>
+      <label>ধরন</label>
+      <select name="type"><option value="income">আয়</option><option value="expense">ব্যয়</option></select>
+      <label>খাত</label><input name="category" maxlength="100" required placeholder="যেমন: বেতন, খাবার">
+      <label>টাকার পরিমাণ (৳)</label><input name="amount" type="number" min="0.01" step="0.01" required>
+      <label>নোট</label><textarea name="notes" rows="3"></textarea>
+      <button class="primary" type="submit">হিসাব সংরক্ষণ</button>
+    </form>
+  </section>
+
+  <section id="goals" class="panel hidden">
+    <h2>🎯 Goals & Plans</h2>
+    <form id="goalsForm">
+      <label>লক্ষ্যের নাম</label><input name="title" maxlength="150" required placeholder="যেমন: ইংরেজি শেখা">
+      <label>বিস্তারিত</label><textarea name="description" rows="3"></textarea>
+      <label>লক্ষ্য পূরণের তারিখ</label><input name="target_date" type="date">
+      <button class="primary" type="submit">লক্ষ্য সংরক্ষণ</button>
+    </form>
+  </section>
+
+  <section id="records" class="panel hidden">
+    <h2>📊 My Records</h2>
+    <label>কোন তথ্য দেখতে চাও?</label>
+    <select id="recordType">
+      <option value="daily_logs">Daily Journal</option>
+      <option value="learning_logs">Learning</option>
+      <option value="finance_logs">Finance</option>
+      <option value="goals">Goals</option>
+    </select>
+    <button id="loadRecords" class="primary" type="button">আমার তথ্য দেখাও</button>
+    <div id="recordList"></div>
+  </section>
+
+  <p><button id="logout" class="danger" type="button">লগআউট</button></p>
+</main>
+<footer>LIFEOS · Your life, organized.</footer>
+
+<script>
+const SUPABASE_URL = "https://lifeos.shuvo-sa-ss.workers.dev/";
+const SUPABASE_KEY = "sb_publishable_jUL2Ls1DBRvuFiQ26wMXqQ_CmNsMlXm";
+
+const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let currentUser = null;
+
+const $ = id => document.getElementById(id);
+const message = (text) => { $("message").textContent = text; };
+
+function localDate() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().slice(0,10);
+}
+
+document.querySelectorAll('input[type="date"]').forEach(el => {
+  el.value = localDate();
+});
+
+document.querySelectorAll("nav button").forEach(button => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll("main > section").forEach(s => s.classList.add("hidden"));
+    button.classList.add("active");
+    $(button.dataset.tab).classList.remove("hidden");
+  });
+});
+
+async function start() {
+  const { data, error } = await client.auth.getSession();
+  if (error) throw error;
+
+  currentUser = data.session?.user;
+  if (!currentUser) {
+    message("লগইন করা নেই। প্রথমে লগইন পেজে যাও।");
+    const link = document.createElement("a");
+    link.href = "/";
+    link.textContent = "LIFEOS লগইন পেজে ফিরে যাও";
+    link.style.color = "white";
+    $("message").appendChild(document.createElement("br"));
+    $("message").appendChild(link);
+    document.querySelectorAll("form, nav, .cards").forEach(el => el.classList.add("hidden"));
+    return;
+  }
+
+  $("userEmail").textContent = currentUser.email || "LIFEOS User";
+  message("তুমি লগইন করেছ। তোমার তথ্য তোমার অ্যাকাউন্টের সঙ্গে সংরক্ষিত হবে।");
+  await refreshSummary();
+}
+
+async function saveRow(table, row) {
+  if (!currentUser) throw new Error("প্রথমে লগইন করো।");
+  const { error } = await client.from(table).insert({
+    ...row,
+    user_id: currentUser.id
+  });
+  if (error) throw error;
+}
+
+function formValues(form) {
+  return Object.fromEntries(new FormData(form).entries());
+}
+
+async function handleForm(id, table, convert, success) {
+  $(id).addEventListener("submit", async event => {
+    event.preventDefault();
+    const button = $(id).querySelector('button[type="submit"]');
+    button.disabled = true;
+    try {
+      const values = formValues($(id));
+      await saveRow(table, convert(values));
+      message(success);
+      $(id).reset();
+      $(id).querySelectorAll('input[type="date"]').forEach(el => el.value = localDate());
+      await refreshSummary();
+    } catch (e) {
+      message("সংরক্ষণ করা যায়নি: " + e.message);
+    } finally {
+      button.disabled = false;
+    }
+  });
+}
+
+handleForm("dailyForm", "daily_logs", v => ({
+  log_date: v.date, title: v.title, mood: v.mood, notes: v.notes || null
+}), "জার্নাল সংরক্ষিত হয়েছে।");
+
+handleForm("learningForm", "learning_logs", v => ({
+  learning_date: v.date, subject: v.subject,
+  minutes: Number(v.minutes), notes: v.notes || null
+}), "শেখার তথ্য সংরক্ষিত হয়েছে।");
+
+handleForm("financeForm", "finance_logs", v => ({
+  entry_date: v.date, entry_type: v.type, category: v.category,
+  amount: Number(v.amount), notes: v.notes || null
+}), "আয়-ব্যয়ের তথ্য সংরক্ষিত হয়েছে।");
+
+handleForm("goalsForm", "goals", v => ({
+  title: v.title, description: v.description || null,
+  target_date: v.target_date || null, status: "active"
+}), "লক্ষ্য সংরক্ষিত হয়েছে।");
+
+async function getRows(table, columns = "*") {
+  const { data, error } = await client.from(table)
+    .select(columns).order("created_at", { ascending: false }).limit(100);
+  if (error) throw error;
+  return data || [];
+}
+
+async function refreshSummary() {
+  try {
+    const [daily, learning, finance, goals] = await Promise.all([
+      client.from("daily_logs").select("id", { count:"exact", head:true }).eq("log_date", localDate()),
+      client.from("learning_logs").select("minutes"),
+      client.from("finance_logs").select("amount,entry_type"),
+      client.from("goals").select("id", { count:"exact", head:true }).eq("status", "active")
+    ]);
+
+    for (const result of [daily, learning, finance, goals]) {
+      if (result.error) throw result.error;
+    }
+
+    $("journalCount").textContent = daily.count ?? 0;
+    $("learningCount").textContent = (learning.data || []).reduce((sum, r) => sum + Number(r.minutes || 0), 0);
+    $("incomeCount").textContent = "৳" + (finance.data || [])
+      .filter(r => r.entry_type === "income")
+      .reduce((sum, r) => sum + Number(r.amount || 0), 0).toLocaleString("en-US");
+    $("goalCount").textContent = goals.count ?? 0;
+  } catch (e) {
+    message("ড্যাশবোর্ডের সারাংশ লোড হয়নি: " + e.message);
+  }
+}
+
+$("loadRecords").addEventListener("click", async () => {
+  const table = $("recordType").value;
+  $("recordList").textContent = "তথ্য লোড হচ্ছে...";
+  try {
+    const rows = await getRows(table);
+    const list = $("recordList");
+    list.replaceChildren();
+
+    if (!rows.length) {
+      list.textContent = "এখনো কোনো তথ্য সংরক্ষিত নেই।";
+      return;
+    }
+
+    rows.forEach(row => {
+      const entry = document.createElement("div");
+      entry.className = "entry";
+      const title = document.createElement("strong");
+      title.textContent = row.title || row.subject || row.category || "রেকর্ড";
+      const detail = document.createElement("p");
+      detail.className = "muted";
+      detail.textContent = [
+        row.log_date || row.learning_date || row.entry_date || row.target_date || "",
+        row.mood || "",
+        row.minutes != null ? row.minutes + " মিনিট" : "",
+        row.amount != null ? "৳" + row.amount : "",
+        row.status || "",
+        row.notes || row.description || ""
+      ].filter(Boolean).join(" · ");
+      entry.append(title, detail);
+      list.appendChild(entry);
+    });
+  } catch (e) {
+    $("recordList").textContent = "তথ্য লোড হয়নি: " + e.message;
+  }
+});
+
+$("logout").addEventListener("click", async () => {
+  const { error } = await client.auth.signOut();
+  if (error) {
+    message("লগআউট করা যায়নি: " + error.message);
+    return;
+  }
+  window.location.href = "/";
+});
+
+start().catch(e => message("সংযোগে সমস্যা: " + e.message));
+</script>
+</body>
+       </html>
