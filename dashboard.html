@@ -139,6 +139,7 @@
     const $ = (id) => document.getElementById(id);
     let user = null;
     let allGoals = [];
+    let allGoalProgress = [];
     let activeProgressGoalId = null;
     let noticeTimer = null;
 
@@ -217,11 +218,15 @@
       return `<article class="goal-card" data-goal-id="${escapeHTML(goal.id)}"><div class="section-head"><h3>${escapeHTML(goal.title)}</h3><span class="badge ${done?"good":left!==null&&left<0?"bad":goal.status==="paused"?"warn":""}">${statusText}</span></div>
         ${goal.description?`<p>${escapeHTML(goal.description)}</p>`:""}<p class="record-meta">লক্ষ্যের তারিখ: ${escapeHTML(deadline?formatDate(deadline):"নির্ধারিত নয়")} · ${escapeHTML(deadlineText)}</p>
         <p class="record-meta">শেষ অগ্রগতি: ${escapeHTML(last?formatDate(last):"কোনো রেকর্ড নেই")} · ${done?"সম্পন্ন":`শেষ অগ্রগতির পর ${inactive} দিন`}</p>
+        ${(()=>{const entries=allGoalProgress.filter(item=>String(item.goal_id)===String(goal.id)).slice(0,5);return `<div class="progress-history"><h4 style="margin:10px 0 6px">অগ্রগতির ইতিহাস</h4>${entries.length?entries.map(item=>`<div class="record" style="margin:6px 0;padding:10px"><p class="record-meta">${escapeHTML(formatDate(item.progress_date))}</p><p>${escapeHTML(item.note||"অগ্রগতি সেভ হয়েছে, কোনো বিবরণ লেখা হয়নি।")}</p></div>`).join(""):'<p class="record-meta">এখনও কোনো অগ্রগতির বিবরণ নেই। “আজ অগ্রগতি লিখি” চাপ দিয়ে লিখে সেভ করো।</p>'}</div>`;})()}
         <div class="motivation"><span class="badge ${nudge.kind}">${nudge.kind==="good"?"ভালো":nudge.kind==="warn"?"মনে করিয়ে দিচ্ছি":"মনোযোগ দাও"}</span> ${escapeHTML(nudge.text)}</div>
         ${!done?`<div class="goal-actions"><button type="button" data-action="progress" data-id="${escapeHTML(goal.id)}">আজ অগ্রগতি লিখি</button><button type="button" class="success" data-action="complete" data-id="${escapeHTML(goal.id)}">✓ সম্পন্ন</button><button type="button" class="secondary" data-action="extend" data-id="${escapeHTML(goal.id)}">তারিখ বাড়াও</button>${goal.status==="paused"?`<button type="button" class="secondary" data-action="resume" data-id="${escapeHTML(goal.id)}">আবার শুরু</button>`:`<button type="button" class="secondary" data-action="pause" data-id="${escapeHTML(goal.id)}">বিরতি</button>`}</div>`:`<div class="goal-actions"><button type="button" class="secondary" data-action="reopen" data-id="${escapeHTML(goal.id)}">আবার চালু করো</button></div>`}</article>`;
     }
     async function refreshGoals(){
       const {data,error}=await supabase.from("goals").select("*").eq("user_id",user.id).order("created_at",{ascending:false}); if(error) throw error; allGoals=data||[];
+      const {data:progressData,error:progressError}=await supabase.from("goal_progress").select("id,goal_id,progress_date,note,created_at").eq("user_id",user.id).order("progress_date",{ascending:false});
+      if(progressError) throw progressError;
+      allGoalProgress=progressData||[];
       const done=allGoals.filter(g=>g.status==="completed").length, remaining=allGoals.length-done;
       $("goalsTotal").textContent=allGoals.length.toLocaleString("bn-BD"); $("goalsCompleted").textContent=done.toLocaleString("bn-BD"); $("goalsRemaining").textContent=remaining.toLocaleString("bn-BD");
       const upcoming=allGoals.filter(g=>g.status!=="completed"&&getEffectiveDeadline(g)).map(g=>({left:dateDiff(todayISO(),getEffectiveDeadline(g))})).sort((a,b)=>a.left-b.left)[0];
