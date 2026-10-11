@@ -8,7 +8,7 @@
   <style>
     :root{color-scheme:dark;--bg:#0b1220;--panel:#121c2e;--panel2:#17243a;--text:#edf3ff;--muted:#9eacc4;--line:#2a3a55;--accent:#7c9cff;--good:#5ee0a0;--warn:#ffc76a;--bad:#ff8585}
     *{box-sizing:border-box}html{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;background:var(--bg);color:var(--text)}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at top,#14213b 0%,var(--bg) 55%)}
-    #app{display:none;max-width:1100px;margin:auto;padding:18px 14px 40px}body.authenticated #app{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-size:1.5rem;font-weight:850;letter-spacing:.3px}.brand span{color:var(--accent)}.sub{color:var(--muted);font-size:.92rem;margin-top:3px}.panel{background:rgba(18,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px #0002}.panel h2,.panel h3{margin:0 0 12px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(8px)}button, input,select,textarea{font:inherit}button{border:0;border-radius:11px;padding:10px 13px;background:var(--accent);color:#071022;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.tabs button{white-space:nowrap;background:var(--panel2);color:var(--text);border:1px solid var(--line)}.tabs button.active{background:var(--accent);color:#071022;border-color:var(--accent)}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.danger{background:#4a202b;color:#ffdfe2}.success{background:#164533;color:#d7ffea}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:13px;min-width:0}.stat .label{font-size:.85rem;color:var(--muted)}.stat .value{font-size:1.45rem;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:.92rem;color:#d5e0f4}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#0b1424;color:var(--text);padding:11px;border-radius:10px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}.field textarea{min-height:84px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.notice{display:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0;white-space:pre-wrap}.notice.show{display:block}.notice.error{border-color:#a64755;background:#361b26;color:#ffdfe2}.notice.ok{border-color:#277a59;background:#123528;color:#d7ffea}.record-list,.goal-list{display:grid;gap:10px}.record,.goal-card{border:1px solid var(--line);background:#0d1728;border-radius:14px;padding:13px;min-width:0}.record h3,.goal-card h3{margin:0 0 5px;font-size:1.03rem;overflow-wrap:anywhere}.record p,.goal-card p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}.record-meta{color:var(--muted);font-size:.86rem}.badge{display:inline-block;border-radius:999px;padding:4px 9px;background:#263754;color:#dce8ff;font-size:.8rem;margin:2px 4px 2px 0}.badge.good{background:#164533;color:#d7ffea}.badge.warn{background:#4a371c;color:#ffe7b5}.badge.bad{background:#4a202b;color:#ffdfe2}.goal-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.motivation{line-height:1.65;border-left:3px solid var(--accent);padding:10px 12px;background:#101e33;border-radius:0 10px 10px 0;margin-top:12px}.checkline{display:flex;align-items:center;gap:9px}.checkline input{width:18px;height:18px;accent-color:var(--accent)}.empty{border:1px dashed var(--line);padding:18px;border-radius:12px;color:var(--muted);text-align:center}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.small{font-size:.84rem}.hidden{display:none!important}
+    #app{display:none;max-width:1100px;margin:auto;padding:18px 14px 40px}body.authenticated #app{display:block}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}.brand{font-size:1.5rem;font-weight:850;letter-spacing:.3px}.brand span{color:var(--accent)}.sub{color:var(--muted);font-size:.92rem;margin-top:3px}.panel{background:rgba(18,28,46,.96);border:1px solid var(--line);border-radius:18px;padding:16px;margin:12px 0;box-shadow:0 10px 30px #0002}.panel h2,.panel h3{margin:0 0 12px}.muted{color:var(--muted)}.tabs{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px;position:sticky;top:0;z-index:5;background:#0b1220ed;backdrop-filter:blur(8px)}button, input,select,textarea{font:inherit}button{border:0;border-radius:11px;padding:10px 13px;background:var(--accent);color:#071022;font-weight:750;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}.tabs button{white-space:nowrap;background:var(--panel2);color:var(--text);border:1px solid var(--line)}.tabs button.active{background:var(--accent);color:#071022;border-color:var(--accent)}.secondary{background:var(--panel2);border:1px solid var(--line);color:var(--text)}.danger{background:#4a202b;color:#ffdfe2}.success{background:#164533;color:#d7ffea}.page{display:none}.page.active{display:block}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.stat{background:var(--panel2);border:1px solid var(--line);border-radius:14px;padding:13px;min-width:0}.stat .label{font-size:.85rem;color:var(--muted)}.stat .value{font-size:1.45rem;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.field{display:flex;flex-direction:column;gap:6px;min-width:0}.field label{font-size:.92rem;color:#d5e0f4}.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:#0b1424;color:var(--text);padding:11px;border-radius:10px;outline:none}.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}.field textarea{min-height:84px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.full{grid-column:1/-1}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}.notice{display:none;border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin:12px 0;white-space:pre-wrap}.notice.show{display:block}.notice.error{border-color:#a64755;background:#361b26;color:#ffdfe2}.notice.ok{border-color:#277a59;background:#123528;color:#d7ffea}.record-list,.goal-list{display:grid;gap:10px}.record,.goal-card{border:1px solid var(--line);background:#0d1728;border-radius:14px;padding:13px;min-width:0}.record h3,.goal-card h3{margin:0 0 5px;font-size:1.03rem;overflow-wrap:anywhere}.record p,.goal-card p{margin:5px 0;white-space:pre-wrap;overflow-wrap:anywhere}.record-meta{color:var(--muted);font-size:.86rem}.badge{display:inline-block;border-radius:999px;padding:4px 9px;background:#263754;color:#dce8ff;font-size:.8rem;margin:2px 4px 2px 0}.badge.good{background:#164533;color:#d7ffea}.badge.warn{background:#4a371c;color:#ffe7b5}.badge.bad{background:#4a202b;color:#ffdfe2}.goal-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}.motivation{line-height:1.65;border-left:3px solid var(--accent);padding:10px 12px;background:#101e33;border-radius:0 10px 10px 0;margin-top:12px}.checkline{display:flex;align-items:center;gap:9px}.checkline input{width:18px;height:18px;accent-color:var(--accent)}.empty{border:1px dashed var(--line);padding:18px;border-radius:12px;color:var(--muted);text-align:center}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.small{font-size:.84rem}.hidden{display:none!important}.modal-backdrop{position:fixed;inset:0;background:#000a;display:none;align-items:center;justify-content:center;padding:16px;z-index:20}.modal-backdrop.open{display:flex}.modal-card{width:min(100%,520px);background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:18px;box-shadow:0 20px 60px #0008}.modal-card h2{margin:0 0 8px}.modal-card textarea{width:100%;min-height:130px;background:#0b1424;color:var(--text);border:1px solid var(--line);padding:12px;border-radius:10px;font:inherit}.modal-actions{display:flex;justify-content:flex-end;gap:8px;flex-wrap:wrap;margin-top:12px}
     @media(max-width:680px){#app{padding:13px 10px 30px}.grid,.form-grid{grid-template-columns:1fr}.stat-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:13px}.brand{font-size:1.3rem}.tabs{margin:0 -10px;padding-left:10px;padding-right:10px}}
   </style>
 </head>
@@ -19,6 +19,16 @@
       <button id="logoutBtn" class="secondary" type="button">লগআউট</button>
     </header>
     <div id="notice" class="notice" role="status" aria-live="polite"></div>
+    <div id="progressModal" class="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="progressModalTitle">
+      <div class="modal-card">
+        <h2 id="progressModalTitle">আজকের অগ্রগতি</h2>
+        <p id="progressGoalTitle" class="muted"></p>
+        <form id="progressForm">
+          <div class="field"><label for="progressNote">আজ এই লক্ষ্যে কী কাজ করলে?</label><textarea id="progressNote" maxlength="2000" placeholder="যেমন: ৩০ মিনিট ইংরেজি পড়েছি..."></textarea></div>
+          <div class="modal-actions"><button type="button" id="cancelProgressBtn" class="secondary">বাতিল</button><button type="submit" id="saveProgressBtn">অগ্রগতি সেভ</button></div>
+        </form>
+      </div>
+    </div>
     <nav class="tabs" aria-label="Dashboard sections">
       <button type="button" data-page="overview" class="active">ড্যাশবোর্ড</button>
       <button type="button" data-page="daily">দৈনিক কাজ</button>
@@ -129,6 +139,7 @@
     const $ = (id) => document.getElementById(id);
     let user = null;
     let allGoals = [];
+    let activeProgressGoalId = null;
     let noticeTimer = null;
 
     function todayISO(){ const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; }
@@ -224,10 +235,12 @@
     async function onGoalAction(action,id){
       const goal=allGoals.find(g=>String(g.id)===String(id)); if(!goal) throw new Error("লক্ষ্যটি পাওয়া যায়নি।");
       if(action==="progress"){
-        const note=window.prompt("আজ এই লক্ষ্যে কী কাজ করলে? (খালি রাখলেও সেভ হবে)",""); if(note===null) return;
-        const today=todayISO(); const {error}=await supabase.from("goal_progress").upsert({user_id:user.id,goal_id:goal.id,progress_date:today,note:note.trim()||null},{onConflict:"goal_id,progress_date"}); if(error) throw error;
-        const {error:updateError}=await supabase.from("goals").update({last_progress_date:today}).eq("id",goal.id).eq("user_id",user.id); if(updateError) throw updateError;
-        showNotice("আজকের অগ্রগতি সেভ হয়েছে। এগিয়ে চলো!","ok"); await refreshDashboard(); return;
+        activeProgressGoalId=String(goal.id);
+        $("progressGoalTitle").textContent=`লক্ষ্য: ${goal.title}`;
+        $("progressNote").value="";
+        $("progressModal").classList.add("open");
+        setTimeout(()=>$("progressNote").focus(),50);
+        return;
       }
       if(action==="complete"){
         if(!window.confirm("এই লক্ষ্যটি সম্পন্ন হিসেবে চিহ্নিত করবে?")) return;
@@ -241,6 +254,28 @@
       if(action==="reopen"){if(!window.confirm("এই লক্ষ্যটি আবার চালু করবে?"))return;await updateGoal(goal.id,{status:"active",completed_at:null,last_progress_date:goal.last_progress_date||null});showNotice("লক্ষ্যটি আবার চালু হয়েছে।","ok");}
     }
     $("goalsList").addEventListener("click",async event=>{const button=event.target.closest("button[data-action]");if(!button)return;button.disabled=true;try{await onGoalAction(button.dataset.action,button.dataset.id);}catch(error){console.error(error);showNotice("লক্ষ্যে পরিবর্তন করা যায়নি: "+(error.message||"অজানা সমস্যা"),"error");}finally{button.disabled=false;}});
+    function closeProgressModal(){ $("progressModal").classList.remove("open"); activeProgressGoalId=null; }
+    $("cancelProgressBtn").addEventListener("click",closeProgressModal);
+    $("progressModal").addEventListener("click",event=>{if(event.target===$("progressModal"))closeProgressModal();});
+    $("progressForm").addEventListener("submit",async event=>{
+      event.preventDefault();
+      const button=$("saveProgressBtn"); button.disabled=true;
+      try{
+        if(!activeProgressGoalId) throw new Error("লক্ষ্যটি নির্বাচন করা হয়নি। আবার বাটনে চাপ দাও।");
+        const goal=allGoals.find(g=>String(g.id)===activeProgressGoalId);
+        if(!goal) throw new Error("লক্ষ্যটি পাওয়া যায়নি। পাতা রিফ্রেশ করে আবার চেষ্টা করো।");
+        const today=todayISO();
+        const note=$("progressNote").value.trim();
+        const {error}=await supabase.from("goal_progress").upsert({user_id:user.id,goal_id:goal.id,progress_date:today,note:note||null},{onConflict:"goal_id,progress_date"});
+        if(error) throw error;
+        const {error:updateError}=await supabase.from("goals").update({last_progress_date:today}).eq("id",goal.id).eq("user_id",user.id);
+        if(updateError) throw updateError;
+        closeProgressModal();
+        showNotice("আজকের অগ্রগতি সেভ হয়েছে। এগিয়ে চলো!","ok");
+        await refreshDashboard();
+      }catch(error){console.error(error);showNotice("অগ্রগতি সেভ হয়নি: "+(error.message||error.details||"অজানা সমস্যা"),"error");}
+      finally{button.disabled=false;}
+    });
 
     function recordHTML(table,row){
       if(table==="daily_logs") return `<article class="record"><h3>${escapeHTML(row.title||"দৈনিক কাজ")}</h3><p class="record-meta">${escapeHTML(formatDate(row.log_date))} · মুড: ${escapeHTML(row.mood||"—")}</p>${row.notes?`<p>${escapeHTML(row.notes)}</p>`:""}</article>`;
@@ -270,4 +305,4 @@
   })();
   </script>
 </body>
-  </html>
+</html>
