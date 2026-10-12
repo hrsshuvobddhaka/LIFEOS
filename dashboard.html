@@ -489,7 +489,10 @@ async function enableLifeOSPushNotifications() {
 
     document.querySelectorAll(".tabs button[data-page]").forEach(button=>button.addEventListener("click",()=>switchPage(button.dataset.page)));
     $("recordType").addEventListener("change",()=>refreshRecords().catch(e=>showNotice("রেকর্ড লোড হয়নি: "+e.message,"error")));
-    $("enableGoalNotificationsBtn").addEventListener("click",enableGoalBrowserNotifications);
+    $("enableGoalNotificationsBtn").addEventListener(
+    "click",
+    enableLifeOSPushNotifications
+    );
     if("Notification" in window && Notification.permission==="granted") setGoalNotificationStatus("নোটিফিকেশন চালু আছে। LIFEOS খোলা থাকলে লক্ষ্য-রিমাইন্ডার দেখাবে.");
     else if("Notification" in window && Notification.permission==="denied") setGoalNotificationStatus("ব্রাউজারের সেটিংসে নোটিফিকেশন অনুমতি বন্ধ আছে।");
     $("refreshBtn").addEventListener("click",()=>refreshDashboard().then(()=>showNotice("ড্যাশবোর্ড আপডেট হয়েছে।","ok")).catch(e=>showNotice("ড্যাশবোর্ড লোড হয়নি: "+e.message,"error")));
