@@ -149,6 +149,7 @@
     "use strict";
     const SUPABASE_URL = "https://bskzevsuyzfuycgxnpwb.supabase.co";
     const SUPABASE_KEY = "sb_publishable_jUL2Ls1DBRvuFiQ26wMXqQ_CmNsMlXm";
+    const VAPID_PUBLIC_KEY = "BNn8Nd__O7NIo6oLcsgizD1mnpccMUqeYRdhVcqy6lyWtF1IuDqW13j91nGBgOoHjL3ih9Kfsov7CbxkOoLS0s8";
     const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
       auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: true, storageKey: "sb-bskzevsuyzfuycgxnpwb-auth-token" }
     });
